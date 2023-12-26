@@ -1,6 +1,7 @@
 import { Link, router } from 'expo-router'
 import React from 'react'
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,96 +10,100 @@ import {
 } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
-import { Router } from 'expo-router'
 
 const Signup = () => {
   return (
-    <View style={styles.registerContainer}>
-      <View style={styles.registerTop}>
-        <View style={styles.registerTitle}>
-          <Text style={styles.titleTxt}>Sign Up</Text>
-          <Text style={styles.subTxt}>
-            Create account and choose favorite menu
-          </Text>
-        </View>
+    <ScrollView style={styles.scrollContainer}>
+      <View style={styles.registerContainer}>
+        <View style={styles.registerTop}>
+          <View style={styles.registerTitle}>
+            <Text style={styles.titleTxt}>Sign Up</Text>
+            <Text style={styles.subTxt}>
+              Create account and store your notes.
+            </Text>
+          </View>
 
-        <View style={styles.inputsContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Name</Text>
-            <TextInput
-              placeholder="Your full name."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
+          <View style={styles.inputsContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Name</Text>
+              <TextInput
+                placeholder="Your full name."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Age</Text>
+              <TextInput
+                placeholder="Your full age."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Address</Text>
+              <TextInput
+                placeholder="Your full address."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Username</Text>
+              <TextInput
+                placeholder="Your full username."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Gmail</Text>
+              <TextInput
+                placeholder="Your gmail."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+            </View>
+            <View style={styles.inputContainerPass}>
+              <Text style={styles.inputTitle}>Password</Text>
+              <TextInput
+                placeholder="Your password."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+              />
+              <View style={{ position: 'absolute', right: 16, bottom: 18 }}>
+                <Feather name="eye-off" size={18} color="#B8B8B8" />
+                {/* <AntDesign name="eyeo" size={18} color="#B8B8B8" /> */}
+              </View>
+            </View>
           </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Age</Text>
-            <TextInput
-              placeholder="Your full age."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Address</Text>
-            <TextInput
-              placeholder="Your full address."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Username</Text>
-            <TextInput
-              placeholder="Your full username."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Gmail</Text>
-            <TextInput
-              placeholder="Your gmail."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
-          </View>
-          <View style={styles.inputContainerPass}>
-            <Text style={styles.inputTitle}>Password</Text>
-            <TextInput
-              placeholder="Your password."
-              style={styles.input}
-              placeholderTextColor="#B8B8B8"
-            />
-            <View style={{ position: 'absolute', right: 16, bottom: 18 }}>
-              <Feather name="eye-off" size={18} color="#B8B8B8" />
-              {/* <AntDesign name="eyeo" size={18} color="#B8B8B8" /> */}
+
+          <View style={styles.registerBtns}>
+            <TouchableOpacity
+              style={styles.registerBtn}
+              onPress={() => router.push('/otp/')}
+            >
+              <Text style={styles.registerBtnTxt}>Register</Text>
+            </TouchableOpacity>
+            <View style={styles.haveAnAcc}>
+              <Text style={styles.haveAnAccTxt}>Have an account?</Text>
+              <Link href="/" style={styles.SignInTxt}>
+                Sign In
+              </Link>
             </View>
           </View>
         </View>
-
-        <View style={styles.registerBtns}>
-          <TouchableOpacity
-            style={styles.registerBtn}
-            onPress={() => router.push('/otp/')}
-          >
-            <Text style={styles.registerBtnTxt}>Register</Text>
-          </TouchableOpacity>
-          <View style={styles.haveAnAcc}>
-            <Text style={styles.haveAnAccTxt}>Have an account?</Text>
-            <Link href="/" style={styles.SignInTxt}>
-              Sign In
-            </Link>
-          </View>
-        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 export default Signup
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   registerContainer: {
     display: 'flex',
     flexDirection: 'column',
