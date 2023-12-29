@@ -1,5 +1,4 @@
-import { Link, router } from 'expo-router'
-import React from 'react'
+import React, { useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -7,11 +6,60 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import { Link, router } from 'expo-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { registerUser, setUsername } from '../../store/Auth/authSlice'
+import { AppDispatch, RootState } from '../../store/store'
 import { AntDesign } from '@expo/vector-icons'
 
+type SignupState = {
+  full_name: string
+  age: string
+  address: string
+  username: string
+  gmail: string
+  password: string
+}
+
 const Signup = () => {
+  const [inputValues, setInputValues] = useState<SignupState>({
+    full_name: '',
+    age: '',
+    address: '',
+    username: '',
+    gmail: '',
+    password: '',
+  })
+
+  const dispatch = useDispatch<AppDispatch>()
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+
+  const handleChange = (fieldName: keyof SignupState, value: string) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: value,
+    }))
+  }
+
+  const handleRegister = () => {
+    if (
+      !inputValues.full_name ||
+      !inputValues.age ||
+      !inputValues.address ||
+      !inputValues.username ||
+      !inputValues.gmail ||
+      !inputValues.password
+    ) {
+      console.log('Please fill in all the fields')
+      return
+    }
+
+    dispatch(registerUser(inputValues))
+  }
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.registerContainer}>
@@ -30,30 +78,38 @@ const Signup = () => {
                 placeholder="Your full name."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.full_name}
+                onChangeText={(text) => handleChange('full_name', text)}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.inputTitle}>Age</Text>
               <TextInput
-                placeholder="Your full age."
+                placeholder="Your age."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.age}
+                onChangeText={(text) => handleChange('age', text)}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.inputTitle}>Address</Text>
               <TextInput
-                placeholder="Your full address."
+                placeholder="Your address."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.address}
+                onChangeText={(text) => handleChange('address', text)}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.inputTitle}>Username</Text>
               <TextInput
-                placeholder="Your full username."
+                placeholder="Your username."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.username}
+                onChangeText={(text) => handleChange('username', text)}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -62,6 +118,8 @@ const Signup = () => {
                 placeholder="Your gmail."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.gmail}
+                onChangeText={(text) => handleChange('gmail', text)}
               />
             </View>
             <View style={styles.inputContainerPass}>
@@ -70,6 +128,8 @@ const Signup = () => {
                 placeholder="Your password."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={inputValues.password}
+                onChangeText={(text) => handleChange('password', text)}
               />
               <View style={{ position: 'absolute', right: 16, bottom: 18 }}>
                 <Feather name="eye-off" size={18} color="#B8B8B8" />
@@ -81,13 +141,17 @@ const Signup = () => {
           <View style={styles.registerBtns}>
             <TouchableOpacity
               style={styles.registerBtn}
-              onPress={() => router.push('/otp/')}
+              onPress={handleRegister}
             >
-              <Text style={styles.registerBtnTxt}>Register</Text>
+              {isLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.registerBtnTxt}>Register</Text>
+              )}
             </TouchableOpacity>
             <View style={styles.haveAnAcc}>
               <Text style={styles.haveAnAccTxt}>Have an account?</Text>
-              <Link href="/" style={styles.SignInTxt}>
+              <Link href="/signIn/" style={styles.SignInTxt}>
                 Sign In
               </Link>
             </View>

@@ -1,11 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { router } from 'expo-router'
+import axios from 'axios'
+import { BASE_API_URL } from '../lib/baseApiUrl'
 
 function GetStart() {
   const goToRegistration = () => {
     router.push('/register/')
   }
+
+  // useEffect(() => {
+  //   const fetchNotes = async () => {
+  //     try {
+  //       const response = await axios.get(`${BASE_API_URL}/get_notes`)
+  //       const data = await response.data
+  //       console.log('data', data)
+  //     } catch (error: any) {
+  //       if (error.response && error.response.status === 404) {
+  //         console.log(error.response.data)
+  //       } else {
+  //         console.log(error.message)
+  //       }
+  //     }
+  //   }
+
+  //   fetchNotes()
+  // }, [])
 
   return (
     <View style={styles.getStartContainer}>
@@ -22,7 +42,10 @@ function GetStart() {
         <TouchableOpacity style={styles.GetStartBtn} onPress={goToRegistration}>
           <Text style={styles.GetStartBtnText}>Get started</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.SigninBtn}>
+        <TouchableOpacity
+          style={styles.SigninBtn}
+          onPress={() => router.push('/signIn/')}
+        >
           <Text style={styles.SigninBtnText}>Sign in</Text>
         </TouchableOpacity>
       </View>

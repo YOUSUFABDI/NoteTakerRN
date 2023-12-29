@@ -1,14 +1,49 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import OTPTextView from 'react-native-otp-textinput'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../store/store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { setGmail, verifyRegisterGmailOTP } from '../../store/Auth/authSlice'
+
+type OTPDataType = {
+  gmail: string
+  otp_code: number
+}
 
 const OTP = () => {
-  const [otp, setOtp] = useState('')
+  const [otp, setOtp] = useState(0)
 
-  const handleOtpChange = (newOtp: string) => {
+  const dispatch = useDispatch<AppDispatch>()
+
+  const storedGmail = useSelector((state: RootState) => state.auth.gmail)
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+
+  const handleOtpChange = (newOtp: number) => {
     setOtp(newOtp)
-    // console.log('OTP changed:', otp)
+  }
+
+  useEffect(() => {
+    AsyncStorage.getItem('gmail').then((gmail) => {
+      if (gmail) {
+        dispatch(setGmail(gmail))
+      }
+    })
+  }, [dispatch])
+
+  const handleOTPVerification = async () => {
+    if (!otp) {
+      console.log('Please fill the otp field')
+      return
+    }
+
+    const OTPData: OTPDataType = {
+      gmail: storedGmail,
+      otp_code: otp,
+    }
+
+    dispatch(verifyRegisterGmailOTP(OTPData))
   }
 
   return (
@@ -18,21 +53,30 @@ const OTP = () => {
         <Text style={styles.otpTopSubtitle}>
           Please enter the code we just sent to email{' '}
         </Text>
-        <Text style={styles.otpTopEmail}>Johndoe@gmail.com</Text>
+        <Text style={styles.otpTopEmail}>{storedGmail}</Text>
       </View>
       <View style={styles.otpWrapper}>
         <OTPTextView
           containerStyle={styles.otpContainer}
           textInputStyle={styles.otpInput}
           tintColor="#54408C"
-          handleTextChange={handleOtpChange}
+          handleTextChange={(newOtp: string) =>
+            handleOtpChange(parseInt(newOtp, 10))
+          }
           inputCount={4}
           keyboardType="numeric"
           autoFocus
         />
         <View style={styles.otpBtnContainer}>
-          <TouchableOpacity style={styles.otpBtn}>
-            <Text style={styles.otpBtnTxt}>Continue</Text>
+          <TouchableOpacity
+            style={styles.otpBtn}
+            onPress={handleOTPVerification}
+          >
+            {isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.otpBtnTxt}>Continue</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
