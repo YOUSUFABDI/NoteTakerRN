@@ -7,17 +7,18 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Alert,
 } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { Link, router } from 'expo-router'
+import { Link } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser, setUsername } from '../../store/Auth/authSlice'
 import { AppDispatch, RootState } from '../../store/store'
-import { AntDesign } from '@expo/vector-icons'
 
 type SignupState = {
   full_name: string
   age: string
+  phone_number: string
   address: string
   username: string
   gmail: string
@@ -28,14 +29,21 @@ const Signup = () => {
   const [inputValues, setInputValues] = useState<SignupState>({
     full_name: '',
     age: '',
+    phone_number: '',
     address: '',
     username: '',
     gmail: '',
     password: '',
   })
+  const [showPassword, setShowPassword] = useState(false)
 
   const dispatch = useDispatch<AppDispatch>()
+
   const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
 
   const handleChange = (fieldName: keyof SignupState, value: string) => {
     setInputValues((prevValues) => ({
@@ -48,13 +56,13 @@ const Signup = () => {
     if (
       !inputValues.full_name ||
       !inputValues.age ||
+      !inputValues.phone_number ||
       !inputValues.address ||
       !inputValues.username ||
       !inputValues.gmail ||
       !inputValues.password
     ) {
-      console.log('Please fill in all the fields')
-      return
+      return Alert.alert('Error', 'Please fill all inputs.', [{ text: 'OK' }])
     }
 
     dispatch(registerUser(inputValues))
@@ -90,6 +98,16 @@ const Signup = () => {
                 placeholderTextColor="#B8B8B8"
                 value={inputValues.age}
                 onChangeText={(text) => handleChange('age', text)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputTitle}>Phone</Text>
+              <TextInput
+                placeholder="Your phone number."
+                style={styles.input}
+                placeholderTextColor="#B8B8B8"
+                value={inputValues.phone_number}
+                onChangeText={(text) => handleChange('phone_number', text)}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -130,11 +148,18 @@ const Signup = () => {
                 placeholderTextColor="#B8B8B8"
                 value={inputValues.password}
                 onChangeText={(text) => handleChange('password', text)}
+                secureTextEntry={!showPassword}
               />
-              <View style={{ position: 'absolute', right: 16, bottom: 18 }}>
-                <Feather name="eye-off" size={18} color="#B8B8B8" />
-                {/* <AntDesign name="eyeo" size={18} color="#B8B8B8" /> */}
-              </View>
+              <TouchableOpacity
+                style={{ position: 'absolute', right: 16, bottom: 18 }}
+                onPress={toggleShowPassword}
+              >
+                <Feather
+                  name={showPassword ? 'eye' : 'eye-off'}
+                  size={18}
+                  color="#B8B8B8"
+                />
+              </TouchableOpacity>
             </View>
           </View>
 

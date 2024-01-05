@@ -92,6 +92,15 @@ function RootLayoutNav() {
             },
           }}
         />
+        <Stack.Screen
+          name="my-account/index"
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+          }}
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </Provider>

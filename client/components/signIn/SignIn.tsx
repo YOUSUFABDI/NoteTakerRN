@@ -1,6 +1,8 @@
 import { Link, router } from 'expo-router'
-import React from 'react'
+import React, { useState } from 'react'
 import {
+  ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,9 +11,45 @@ import {
   View,
 } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { AntDesign } from '@expo/vector-icons'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../store/store'
+import { loginUser } from '../../store/Auth/authSlice'
+
+type LoginDataType = {
+  username: string
+  password: string
+}
 
 const SignIn = () => {
+  const [loginInputValues, setLoginInputValues] = useState<LoginDataType>({
+    username: '',
+    password: '',
+  })
+  const [showPassword, setShowPassword] = useState(false)
+
+  const dispatch = useDispatch<AppDispatch>()
+
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+
+  const handleOnchange = (fieldName: keyof LoginDataType, value: string) => {
+    setLoginInputValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: value,
+    }))
+  }
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const handleLogin = () => {
+    if (!loginInputValues.username || !loginInputValues.password) {
+      return Alert.alert('Error', 'Please fill all inputs.', [{ text: 'OK' }])
+    }
+
+    dispatch(loginUser(loginInputValues))
+  }
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.signInContainer}>
@@ -25,9 +63,11 @@ const SignIn = () => {
             <View style={styles.inputContainer}>
               <Text style={styles.inputTitle}>Username</Text>
               <TextInput
-                placeholder="Your full username."
+                placeholder="Your username."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={loginInputValues.username}
+                onChangeText={(text) => handleOnchange('username', text)}
               />
             </View>
 
@@ -37,11 +77,20 @@ const SignIn = () => {
                 placeholder="Your password."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                value={loginInputValues.password}
+                onChangeText={(text) => handleOnchange('password', text)}
+                secureTextEntry={!showPassword}
               />
-              <View style={{ position: 'absolute', right: 16, bottom: 18 }}>
-                <Feather name="eye-off" size={18} color="#B8B8B8" />
-                {/* <AntDesign name="eyeo" size={18} color="#B8B8B8" /> */}
-              </View>
+              <TouchableOpacity
+                style={{ position: 'absolute', right: 16, bottom: 18 }}
+                onPress={toggleShowPassword}
+              >
+                <Feather
+                  name={`${showPassword ? 'eye' : 'eye-off'}`}
+                  size={18}
+                  color="#B8B8B8"
+                />
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inputContainerPass}>
@@ -50,11 +99,12 @@ const SignIn = () => {
           </View>
 
           <View style={styles.signInBtns}>
-            <TouchableOpacity
-              style={styles.signInBtn}
-              onPress={() => router.push('/(tabs)/')}
-            >
-              <Text style={styles.signInBtnTxt}>Login</Text>
+            <TouchableOpacity style={styles.signInBtn} onPress={handleLogin}>
+              {isLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.signInBtnTxt}>Login</Text>
+              )}
             </TouchableOpacity>
             <View style={styles.haveAnAcc}>
               <Text style={styles.haveAnAccTxt}>Don’t have an account?</Text>

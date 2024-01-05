@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   Ionicons,
   AntDesign,
@@ -8,22 +8,22 @@ import {
 } from '@expo/vector-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setUsername } from '../../store/Auth/authSlice'
+import { logout } from '../../store/Auth/authSlice'
+import { router } from 'expo-router'
+import FetchLoggedInUserInfo from '../../hooks/FetchLoggedInUserInfo'
 
 const Profile = () => {
+  const { loggedInUserInfo } = FetchLoggedInUserInfo()
+  console.log(loggedInUserInfo)
+
   const dispatch = useDispatch()
-  const storedUsername = useSelector((state: RootState) => state.auth.username)
 
-  useEffect(() => {
-    AsyncStorage.getItem('username').then((username) => {
-      if (username) {
-        dispatch(setUsername(username))
-      }
-    })
-  }, [dispatch])
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
 
-  console.log('profile', storedUsername)
+  const handleLogout = () => {
+    dispatch(logout(false))
+    router.push('/signIn/')
+  }
 
   return (
     <View style={styles.profileTabcontainer}>
@@ -34,20 +34,23 @@ const Profile = () => {
             source={require('../../assets/images/profileImage.jpg')}
           />
           <View style={styles.profileNamePhone}>
-            <Text style={styles.name}>{storedUsername || 'John doe'}</Text>
-            <Text style={styles.phone}>61554455</Text>
+            <Text style={styles.name}>{loggedInUserInfo?.username}</Text>
+            <Text style={styles.phone}>{loggedInUserInfo?.phone_number}</Text>
           </View>
         </View>
 
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout}>
             <Text style={styles.logoutTxt}>Logout</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.links}>
-        <View style={styles.link}>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={() => router.push('/my-account/')}
+        >
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>
               <Ionicons name="person" size={24} color="#54408C" />
@@ -57,7 +60,8 @@ const Profile = () => {
             </View>
           </View>
           <AntDesign name="right" size={20} color="black" />
-        </View>
+        </TouchableOpacity>
+
         <View style={styles.link}>
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>
