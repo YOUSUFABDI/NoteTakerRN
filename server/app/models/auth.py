@@ -17,15 +17,21 @@ def gmail_exists(gmail):
     gmail = cursor.fetchone()
     return gmail is not None
 
+def phone_exists(phone_number):
+    cursor = app.config['MYSQL_CONNECTION'].cursor()
+    cursor.execute("SELECT * FROM users WHERE phone_number = %s", (phone_number,))
+    phone_number = cursor.fetchone()
+    return phone_number is not None
+
 def hash_password(password):
      # Hashing the password using bcrypt
      hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
      return hashed_password
 
-def create_user(full_name, age, address, gmail, username, password, otp_code):
+def create_user(full_name, age, address, gmail, username, password, otp_code, phone_number):
      cursor = app.config['MYSQL_CONNECTION'].cursor()
      cursor.execute("DELETE FROM otp_codes WHERE gmail = %s", (gmail,))
-     cursor.execute("INSERT INTO otp_codes (full_name, age, address, gmail, username, password, otp_code) VALUES (%s, %s, %s, %s, %s, %s, %s)", (full_name, age, address, gmail, username, password, otp_code))
+     cursor.execute("INSERT INTO otp_codes (full_name, age, address, gmail, username, password, otp_code, phone_number) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (full_name, age, address, gmail, username, password, otp_code, phone_number))
      app.config['MYSQL_CONNECTION'].commit()
      user_id = cursor.lastrowid
      cursor.close()
@@ -68,8 +74,8 @@ def verify_otp_code(gmail, otp_code):
 
         # If the OTP is correct, move the user to the users table
         cursor = app.config['MYSQL_CONNECTION'].cursor()
-        cursor.execute("INSERT INTO users (full_name, age, address, gmail, username, password) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (user_data_dict['full_name'], user_data_dict['age'], user_data_dict['address'], user_data_dict['gmail'], user_data_dict['username'], user_data_dict['password']))
+        cursor.execute("INSERT INTO users (full_name, age, address, gmail, username, password, phone_number) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                       (user_data_dict['full_name'], user_data_dict['age'], user_data_dict['address'], user_data_dict['gmail'], user_data_dict['username'], user_data_dict['password'], user_data_dict['phone_number']))
         app.config['MYSQL_CONNECTION'].commit()
 
         # Remove the entry from the OTP table
