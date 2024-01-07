@@ -124,6 +124,7 @@ export default SignIn
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    backgroundColor: 'white',
   },
   signInContainer: {
     display: 'flex',

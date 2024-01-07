@@ -18,6 +18,7 @@ export default () => {
           tabBarLabel: ({ focused }) => (
             <Text style={{ color: focused ? '#54408C' : 'black' }}>Home</Text>
           ),
+          headerTitle: 'Home',
         }}
       />
 

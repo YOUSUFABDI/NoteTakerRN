@@ -13,8 +13,7 @@ import { router } from 'expo-router'
 import FetchLoggedInUserInfo from '../../hooks/FetchLoggedInUserInfo'
 
 const Profile = () => {
-  const { loggedInUserInfo } = FetchLoggedInUserInfo()
-  console.log(loggedInUserInfo)
+  const { loggedInUserInfo, isLoading } = FetchLoggedInUserInfo()
 
   const dispatch = useDispatch()
 
@@ -34,8 +33,12 @@ const Profile = () => {
             source={require('../../assets/images/profileImage.jpg')}
           />
           <View style={styles.profileNamePhone}>
-            <Text style={styles.name}>{loggedInUserInfo?.username}</Text>
-            <Text style={styles.phone}>{loggedInUserInfo?.phone_number}</Text>
+            <Text style={styles.name}>
+              {isLoading ? 'Loading ...' : loggedInUserInfo?.username}
+            </Text>
+            <Text style={styles.phone}>
+              {isLoading ? 'Loading ...' : loggedInUserInfo?.phone_number}
+            </Text>
           </View>
         </View>
 
@@ -103,6 +106,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingHorizontal: 24,
     paddingVertical: 24,
+    backgroundColor: 'white',
   },
   profileTabTop: {
     flexDirection: 'row',

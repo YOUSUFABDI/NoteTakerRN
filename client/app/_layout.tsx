@@ -95,7 +95,7 @@ function RootLayoutNav() {
         <Stack.Screen
           name="my-account/index"
           options={{
-            headerTitle: '',
+            headerTitle: 'My Account',
             headerStyle: {
               backgroundColor: 'white',
             },

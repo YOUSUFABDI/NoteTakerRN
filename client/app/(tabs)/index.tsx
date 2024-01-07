@@ -1,12 +1,8 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import Home from '../../components/home/Home'
 
 const index = () => {
-  return (
-    <View>
-      <Text>tab home</Text>
-    </View>
-  )
+  return <Home />
 }
 
 export default index

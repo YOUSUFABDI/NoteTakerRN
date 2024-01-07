@@ -122,9 +122,7 @@ export const loginUser = createAsyncThunk(
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        if (error.response.status === 'error') {
-          Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
-        }
+        Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
       } else {
         console.log(error.message)
       }
