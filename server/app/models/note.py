@@ -8,9 +8,9 @@ def make_note(title, description, created_dt, user_id):
      cursor.close()
      return note_id
 
-def get_all_notes():
+def get_all_notes(id):
      cursor = app.config['MYSQL_CONNECTION'].cursor(dictionary=True)
-     cursor.execute("SELECT * FROM notes")
+     cursor.execute("SELECT * FROM notes WHERE user_id = %s", (id,))
      notes = cursor.fetchall()
      cursor.close()
      return notes

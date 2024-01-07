@@ -16,16 +16,17 @@ def create_note():
     return jsonify({"message": "created successfully", "note_id": note_id}), 201
 
 
-@note_bp.route('/get_notes', methods=['GET'])
+@note_bp.route('/get_notes', methods=['POST'])
 def get_notes():
     # Get all notes
-    notes = get_all_notes()
+    id = request.json.get('id')
+    notes = get_all_notes(id)
 
     # Check if there are notes
     if not notes:
-        return jsonify({"message": "No notes found"}), 404
+        return jsonify({"message": "No notes found", "status": "error"}), 404
     
-    return jsonify({"notes": notes}), 200
+    return jsonify({"message": notes, "status": "success", "length": len(notes)}), 200
 
 @note_bp.route('/delete_note/<int:note_id>', methods=["DELETE"])
 def delete_note(note_id):
@@ -33,9 +34,9 @@ def delete_note(note_id):
     success = delete_note_by_id(note_id)
 
     if success:
-        return jsonify({"message": f"Note {note_id} deleted successfully"}), 200
+        return jsonify({"message": f"Note {note_id} deleted successfully", "status": 'success'}), 200
     else:
-        return jsonify({"error": f"Note {note_id} not found"}), 404
+        return jsonify({"message": f"Note {note_id} not found", "status": "error"}), 404
     
 @note_bp.route('/update_note/<int:note_id>', methods=['PUT'])
 def update_note(note_id):

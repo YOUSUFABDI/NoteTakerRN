@@ -84,6 +84,7 @@ def get_user():
     
     # Construct the user info response
     user_info = {
+        "id": user[0],
         "full_name": user[1],
         "age": user[2],
         "address": user[3],
