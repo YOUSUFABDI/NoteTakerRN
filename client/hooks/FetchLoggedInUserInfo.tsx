@@ -5,6 +5,7 @@ import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type LoggedInUserInfoDataType = {
+  id: number
   full_name: string
   age: number
   phone_number: string

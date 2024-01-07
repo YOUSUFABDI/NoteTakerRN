@@ -1,49 +1,53 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import FetchLoggedInUserInfo from '../../hooks/FetchLoggedInUserInfo'
+import FetchNotes from '../../hooks/FetchNotes'
+
+type ResponseDataType = {
+  id: number
+  user_id: number
+  title: string
+  description: string
+  createdDT: number
+  updatedDT: number
+}
 
 const Home = () => {
+  const { loggedInUserInfo } = FetchLoggedInUserInfo()
+
+  const { notes, loading, deleteNote } = FetchNotes()
+
   return (
     <View style={styles.homeContainer}>
-      <Text>Hi Yusuf 👋</Text>
-      <View style={styles.notesWrapper}>
-        <View style={styles.noteContainer}>
-          <View style={styles.notesTop}>
-            <Text style={styles.noteTitle}>Title</Text>
-            <Text style={styles.noteDescription}>Description</Text>
-          </View>
-          <View style={styles.noteBottom}>
-            <Text>Created At: 00/00/000</Text>
-            <TouchableOpacity>
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.noteContainer}>
-          <View style={styles.notesTop}>
-            <Text style={styles.noteTitle}>Title</Text>
-            <Text style={styles.noteDescription}>Description</Text>
-          </View>
-          <View style={styles.noteBottom}>
-            <Text>Created At: 00/00/000</Text>
-            <TouchableOpacity>
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.noteContainer}>
-          <View style={styles.notesTop}>
-            <Text style={styles.noteTitle}>Title</Text>
-            <Text style={styles.noteDescription}>Description</Text>
-          </View>
-          <View style={styles.noteBottom}>
-            <Text>Created At: 00/00/000</Text>
-            <TouchableOpacity>
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      <Text style={styles.hiTxt}>Hi {loggedInUserInfo?.username} 👋</Text>
+      <ScrollView style={styles.notesWrapper}>
+        {loading && <Text>No notes yet.</Text>}
+        {notes.map((note: ResponseDataType) => {
+          return (
+            <View style={styles.noteContainer}>
+              <View>
+                <Text style={styles.noteTitle}>{note.title}</Text>
+                <ScrollView style={styles.noteDescriptionContainer}>
+                  <Text style={styles.noteDescription}>{note.description}</Text>
+                </ScrollView>
+              </View>
+              <View style={styles.noteBottom}>
+                <Text>Created At: {note.createdDT}</Text>
+                <TouchableOpacity onPress={() => deleteNote(note.id)}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        })}
+      </ScrollView>
     </View>
   )
 }
@@ -57,15 +61,22 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
   },
+  hiTxt: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    paddingTop: 12,
+  },
   notesWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    width: '100%',
     gap: 15,
+    flex: 1,
+    paddingTop: 20,
   },
   noteContainer: {
     position: 'relative',
     display: 'flex',
-    flex: 1,
+    width: '100%',
     flexDirection: 'column',
     justifyContent: 'space-between',
     backgroundColor: '#FAF9FD',
@@ -87,26 +98,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
   },
+  noteDescriptionContainer: {
+    maxHeight: 100,
+  },
   noteDescription: {
     fontSize: 16,
     color: '#000',
     paddingVertical: 8,
-  },
-  notesTop: {
-    // position: 'absolute',
-    // top: 5,
-    // left: 8,
-    // right: 8,
   },
   noteBottom: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // position: 'absolute',
-    // bottom: 5,
-    // left: 8,
-    // right: 8,
+    paddingVertical: 8,
   },
   deleteButtonText: {
     color: '#EF5A56',
