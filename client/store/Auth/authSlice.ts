@@ -90,7 +90,6 @@ export const verifyRegisterGmailOTP = createAsyncThunk(
       if (data.status === 'success') {
         router.push('/signIn/')
       }
-      console.log(data)
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)

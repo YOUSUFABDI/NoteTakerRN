@@ -12,6 +12,8 @@ const FetchNotes = () => {
 
   const fetchNotes = async () => {
     const id = loggedInUserInfo?.id
+    if(!id) return
+
     const notesRequest = {
       id: id,
     }
@@ -42,6 +44,8 @@ const FetchNotes = () => {
   }
 
   const deleteNote = async (id: number) => {
+    if(!id) return
+
     try {
       const response = await axios.delete(`${BASE_API_URL}/delete_note/${id}`)
       const data = await response.data
@@ -61,7 +65,7 @@ const FetchNotes = () => {
 
   useEffect(() => {
     fetchNotes()
-  }, [])
+  }, [fetchNotes])
 
   return { notes, loading, fetchNotes, deleteNote }
 }

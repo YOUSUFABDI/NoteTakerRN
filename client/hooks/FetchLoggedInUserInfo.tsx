@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BASE_API_URL } from '../lib/baseApiUrl'
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -26,6 +26,8 @@ const FetchLoggedInUserInfo = () => {
       const getUserData = {
         username: username,
       }
+
+      if(!username) return
 
       setIsLoading(true)
       try {
