@@ -19,8 +19,8 @@ def create_note():
 @note_bp.route('/get_notes', methods=['POST'])
 def get_notes():
     # Get all notes
-    id = request.json.get('id')
-    notes = get_all_notes(id)
+    username = request.json.get('username')
+    notes = get_all_notes(username)
 
     # Check if there are notes
     if not notes:
