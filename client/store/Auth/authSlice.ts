@@ -15,6 +15,14 @@ type LoggedInUserInfoDataType = {
   address: string
 }
 
+type LogInUserNotesDataType = {
+  id: number
+  title: string
+  description: string
+  createdDT: string
+  updatedDT: string
+}
+
 type InitialStateType = {
   isLoading: boolean
   error: string
@@ -22,6 +30,7 @@ type InitialStateType = {
   gmail: string
   isLoggedIn: boolean
   logedInUserInfo: LoggedInUserInfoDataType | null
+  logedInUserNotes: LogInUserNotesDataType[]
 }
 
 type RegisterUserData = {
@@ -55,6 +64,7 @@ const initialState: InitialStateType = {
   gmail: "",
   isLoggedIn: false,
   logedInUserInfo: null,
+  logedInUserNotes: [],
 }
 
 export const registerUser = createAsyncThunk(
@@ -133,6 +143,7 @@ export const loginUser = createAsyncThunk(
         await AsyncStorage.setItem("logedInUsername", loginData.username)
         await AsyncStorage.setItem("isLoggedIn", "true")
         dispatch(getUser({ username: loginData.username }))
+        dispatch(getUserNotes({ username: loginData.username }))
         router.push("/(tabs)/profile")
       }
     } catch (error: any) {
@@ -161,13 +172,34 @@ export const getUser = createAsyncThunk(
       )
 
       const data = await response.data
-      const userInfo = JSON.stringify(data.user)
-      console.log("data: " + userInfo)
 
       if (data.status === "success") {
         return data.user
       } else {
         throw new Error(data.message || "Failed to fetch user information")
+      }
+    } catch (error: any) {
+      throw new Error(error.message || "Something went wrong")
+    }
+  }
+)
+
+export const getUserNotes = createAsyncThunk(
+  "getUserNotes",
+  async (userData: GetUserDataType) => {
+    try {
+      const response = await axios.post(`${BASE_API_URL}/get_notes`, userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await response.data
+
+      if (data.status === "success") {
+        return data.message
+      } else {
+        throw new Error(data.message || "Failed to fetch user notes")
       }
     } catch (error: any) {
       throw new Error(error.message || "Something went wrong")
@@ -236,6 +268,19 @@ const authSlice = createSlice({
       state.logedInUserInfo = action.payload
     })
     builder.addCase(getUser.rejected, (state, action) => {
+      state.isLoading = false
+      state.error = action.error.message || "Failed to fetch user information"
+    })
+    // cases for getting logged in user notes
+    builder.addCase(getUserNotes.pending, (state) => {
+      state.isLoading = true
+    })
+    builder.addCase(getUserNotes.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.username = action.payload.username
+      state.logedInUserNotes = action.payload
+    })
+    builder.addCase(getUserNotes.rejected, (state, action) => {
       state.isLoading = false
       state.error = action.error.message || "Failed to fetch user information"
     })

@@ -1,11 +1,10 @@
 import React from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import FetchNotes from "../../hooks/FetchNotes"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 
-type ResponseDataType = {
+type LogInUserNotesDataType = {
   id: number
   user_id: number
   title: string
@@ -15,20 +14,23 @@ type ResponseDataType = {
 }
 
 const Home = () => {
-  const { notes, loading, deleteNote } = FetchNotes()
-
   const loggedInUserInfo = useSelector(
     (state: RootState) => state.auth.logedInUserInfo
+  )
+  const logedInUserNotes = useSelector(
+    (state: RootState) => state.auth.logedInUserNotes
   )
 
   return (
     <View style={styles.homeContainer}>
       <Text style={styles.hiTxt}>Hi {loggedInUserInfo?.username} 👋</Text>
+      <TouchableOpacity style={styles.addNewNote}>
+        <Text style={styles.addNewNoteTxt}>Add new note</Text>
+      </TouchableOpacity>
       <ScrollView style={styles.notesWrapper}>
-        {/* {loading && <Text>No notes yet.</Text>} */}
-        {/* {notes.map((note: ResponseDataType) => {
+        {logedInUserNotes.map((note: any) => {
           return (
-            <View style={styles.noteContainer}>
+            <View style={styles.noteContainer} key={note.id}>
               <View>
                 <Text style={styles.noteTitle}>{note.title}</Text>
                 <ScrollView style={styles.noteDescriptionContainer}>
@@ -37,13 +39,13 @@ const Home = () => {
               </View>
               <View style={styles.noteBottom}>
                 <Text>Created At: {note.createdDT}</Text>
-                <TouchableOpacity onPress={() => deleteNote(note.id)}>
+                <TouchableOpacity>
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
             </View>
           )
-        })} */}
+        })}
       </ScrollView>
     </View>
   )
@@ -62,6 +64,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     paddingTop: 12,
+  },
+  addNewNote: {
+    marginTop: 20,
+    backgroundColor: "#54408C",
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addNewNoteTxt: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   notesWrapper: {
     flexDirection: "column",

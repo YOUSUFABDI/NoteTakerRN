@@ -1,27 +1,27 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native"
+import React from "react"
 import {
   Ionicons,
   AntDesign,
   MaterialCommunityIcons,
   Foundation,
-} from '@expo/vector-icons'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../store/store'
-import { logout } from '../../store/Auth/authSlice'
-import { router } from 'expo-router'
-import FetchLoggedInUserInfo from '../../hooks/FetchLoggedInUserInfo'
+} from "@expo/vector-icons"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../store/store"
+import { logout } from "../../store/Auth/authSlice"
+import { router } from "expo-router"
 
 const Profile = () => {
-  const { loggedInUserInfo, isLoading } = FetchLoggedInUserInfo()
+  const loggedInUserInfo = useSelector(
+    (state: RootState) => state.auth.logedInUserInfo
+  )
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
 
   const dispatch = useDispatch()
 
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
-
   const handleLogout = () => {
     dispatch(logout(false))
-    router.push('/signIn/')
+    router.push("/signIn/")
   }
 
   return (
@@ -30,14 +30,14 @@ const Profile = () => {
         <View style={styles.profileTabTopImgInfo}>
           <Image
             style={styles.profileImg}
-            source={require('../../assets/images/profileImage.jpg')}
+            source={require("../../assets/images/profileImage.jpg")}
           />
           <View style={styles.profileNamePhone}>
             <Text style={styles.name}>
-              {isLoading ? 'Loading ...' : loggedInUserInfo?.username}
+              {isLoading ? "Loading ..." : loggedInUserInfo?.username}
             </Text>
             <Text style={styles.phone}>
-              {isLoading ? 'Loading ...' : loggedInUserInfo?.phone_number}
+              {isLoading ? "Loading ..." : loggedInUserInfo?.phone_number}
             </Text>
           </View>
         </View>
@@ -52,7 +52,7 @@ const Profile = () => {
       <View style={styles.links}>
         <TouchableOpacity
           style={styles.link}
-          onPress={() => router.push('/my-account/')}
+          onPress={() => router.push("/my-account/")}
         >
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>
@@ -100,27 +100,27 @@ export default Profile
 
 const styles = StyleSheet.create({
   profileTabcontainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 40,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     paddingHorizontal: 24,
     paddingVertical: 24,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   profileTabTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   profileTabTopImgInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 16,
   },
   profileNamePhone: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 2,
   },
   profileImg: {
@@ -130,37 +130,37 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   phone: {
-    color: '#A6A6A6',
+    color: "#A6A6A6",
     fontSize: 14,
   },
   logoutTxt: {
-    color: '#EF5A56',
+    color: "#EF5A56",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   links: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 25,
-    width: '95%',
+    width: "95%",
   },
   link: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   linkIconName: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 16,
   },
   linkIcon: {
     flex: 0.2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   linkName: {
     flex: 1,
