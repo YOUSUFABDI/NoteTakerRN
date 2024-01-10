@@ -1,9 +1,19 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { BASE_API_URL } from '../../lib/baseApiUrl'
-import { router } from 'expo-router'
-import { Alert } from 'react-native'
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import axios from "axios"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { BASE_API_URL } from "../../lib/baseApiUrl"
+import { router } from "expo-router"
+import { Alert } from "react-native"
+
+type LoggedInUserInfoDataType = {
+  id: number
+  full_name: string
+  age: number
+  phone_number: string
+  username: string
+  gmail: string
+  address: string
+}
 
 type InitialStateType = {
   isLoading: boolean
@@ -11,6 +21,7 @@ type InitialStateType = {
   username: string
   gmail: string
   isLoggedIn: boolean
+  logedInUserInfo: LoggedInUserInfoDataType | null
 }
 
 type RegisterUserData = {
@@ -33,42 +44,47 @@ type LoginDataType = {
   password: string
 }
 
+type GetUserDataType = {
+  username: string
+}
+
 const initialState: InitialStateType = {
   isLoading: false,
-  error: '',
-  username: '',
-  gmail: '',
+  error: "",
+  username: "",
+  gmail: "",
   isLoggedIn: false,
+  logedInUserInfo: null,
 }
 
 export const registerUser = createAsyncThunk(
-  'registerUser',
+  "registerUser",
   async (userData: RegisterUserData, { dispatch }) => {
     try {
       const response = await axios.post(`${BASE_API_URL}/register`, userData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       })
 
       const data = await response.data
 
-      if (data.message === 'success') {
+      if (data.message === "success") {
         const username = data.username
         // await AsyncStorage.setItem('username', username)
         // dispatch(setUsername(username))
 
         const gmail = userData.gmail
-        await AsyncStorage.setItem('gmail', gmail)
+        await AsyncStorage.setItem("gmail", gmail)
         dispatch(setGmail(gmail))
 
-        router.push('/otp/')
+        router.push("/otp/")
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        if (error.response.status === 'error') {
-          Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+        if (error.response.status === "error") {
+          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
         }
       } else {
         console.log(error.message)
@@ -78,23 +94,23 @@ export const registerUser = createAsyncThunk(
 )
 
 export const verifyRegisterGmailOTP = createAsyncThunk(
-  'verifyRegisterGmailOTP',
+  "verifyRegisterGmailOTP",
   async (OTPData: OTPDataType) => {
     try {
       const response = await axios.post(`${BASE_API_URL}/verify_otp`, OTPData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       })
       const data = response.data
-      if (data.status === 'success') {
-        router.push('/signIn/')
+      if (data.status === "success") {
+        router.push("/signIn/")
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        if (error.response.status === 'error') {
-          Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+        if (error.response.status === "error") {
+          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
         }
       } else {
         console.log(error.message)
@@ -104,24 +120,25 @@ export const verifyRegisterGmailOTP = createAsyncThunk(
 )
 
 export const loginUser = createAsyncThunk(
-  'loginUser',
-  async (loginData: LoginDataType) => {
+  "loginUser",
+  async (loginData: LoginDataType, { dispatch }) => {
     try {
       const response = await axios.post(`${BASE_API_URL}/login`, loginData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       })
       const data = await response.data
-      if (data.status === 'success') {
-        await AsyncStorage.setItem('logedInUsername', loginData.username)
-        await AsyncStorage.setItem('isLoggedIn', 'true')
-        router.push('/(tabs)/profile')
+      if (data.status === "success") {
+        await AsyncStorage.setItem("logedInUsername", loginData.username)
+        await AsyncStorage.setItem("isLoggedIn", "true")
+        dispatch(getUser({ username: loginData.username }))
+        router.push("/(tabs)/profile")
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+        Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
       } else {
         console.log(error.message)
       }
@@ -129,8 +146,37 @@ export const loginUser = createAsyncThunk(
   }
 )
 
+export const getUser = createAsyncThunk(
+  "getUser",
+  async (getUserData: GetUserDataType) => {
+    try {
+      const response = await axios.post(
+        `${BASE_API_URL}/get_user`,
+        getUserData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+
+      const data = await response.data
+      const userInfo = JSON.stringify(data.user)
+      console.log("data: " + userInfo)
+
+      if (data.status === "success") {
+        return data.user
+      } else {
+        throw new Error(data.message || "Failed to fetch user information")
+      }
+    } catch (error: any) {
+      throw new Error(error.message || "Something went wrong")
+    }
+  }
+)
+
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUsername: (state, action: PayloadAction<string>) => {
@@ -141,7 +187,7 @@ const authSlice = createSlice({
     },
     logout: (state, action: PayloadAction<boolean>) => {
       state.isLoggedIn = action.payload
-      AsyncStorage.removeItem('isLoggedIn')
+      AsyncStorage.removeItem("isLoggedIn")
     },
   },
   extraReducers(builder) {
@@ -154,7 +200,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false
-        state.error = action.error.message || 'Something went wrong!'
+        state.error = action.error.message || "Something went wrong!"
       })
       // cases for verifying register gmail
       .addCase(verifyRegisterGmailOTP.pending, (state) => {
@@ -165,7 +211,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyRegisterGmailOTP.rejected, (state, action) => {
         state.isLoading = false
-        state.error = action.error.message || 'Invalid OTP'
+        state.error = action.error.message || "Invalid OTP"
       })
       // cases for login user
       .addCase(loginUser.pending, (state) => {
@@ -178,8 +224,21 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false
         state.isLoggedIn = false
-        state.error = action.error.message || 'Wrong username or password.'
+        state.error = action.error.message || "Wrong username or password."
       })
+    // cases for getting logged in user
+    builder.addCase(getUser.pending, (state) => {
+      state.isLoading = true
+    })
+    builder.addCase(getUser.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.username = action.payload.username
+      state.logedInUserInfo = action.payload
+    })
+    builder.addCase(getUser.rejected, (state, action) => {
+      state.isLoading = false
+      state.error = action.error.message || "Failed to fetch user information"
+    })
   },
 })
 

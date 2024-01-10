@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import FetchLoggedInUserInfo from './FetchLoggedInUserInfo'
-import { Alert } from 'react-native'
-import { BASE_API_URL } from '../lib/baseApiUrl'
+import { useState, useEffect } from "react"
+import axios from "axios"
+import FetchLoggedInUserInfo from "./FetchLoggedInUserInfo"
+import { Alert } from "react-native"
+import { BASE_API_URL } from "../lib/baseApiUrl"
 
 const FetchNotes = () => {
   const [notes, setNotes] = useState([])
@@ -12,7 +12,7 @@ const FetchNotes = () => {
 
   const fetchNotes = async () => {
     const id = loggedInUserInfo?.id
-    if(!id) return
+    if (!id) return
 
     const notesRequest = {
       id: id,
@@ -25,7 +25,7 @@ const FetchNotes = () => {
         notesRequest,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       )
@@ -34,7 +34,7 @@ const FetchNotes = () => {
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+        Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
       } else {
         console.log(error.message)
       }
@@ -44,28 +44,28 @@ const FetchNotes = () => {
   }
 
   const deleteNote = async (id: number) => {
-    if(!id) return
+    if (!id) return
 
     try {
       const response = await axios.delete(`${BASE_API_URL}/delete_note/${id}`)
       const data = await response.data
-      if (data.status === 'success') {
+      if (data.status === "success") {
         fetchNotes()
-        Alert.alert('Deleted!', data.message, [{ text: 'OK' }])
+        Alert.alert("Deleted!", data.message, [{ text: "OK" }])
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
         console.log(error.response.data)
-        Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+        Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
       } else {
         console.log(error.message)
       }
     }
   }
 
-  useEffect(() => {
-    fetchNotes()
-  }, [fetchNotes])
+  // useEffect(() => {
+  //   fetchNotes()
+  // }, [fetchNotes])
 
   return { notes, loading, fetchNotes, deleteNote }
 }

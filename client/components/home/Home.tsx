@@ -1,14 +1,9 @@
-import React from 'react'
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import FetchLoggedInUserInfo from '../../hooks/FetchLoggedInUserInfo'
-import FetchNotes from '../../hooks/FetchNotes'
+import React from "react"
+import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import FetchNotes from "../../hooks/FetchNotes"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store/store"
 
 type ResponseDataType = {
   id: number
@@ -20,16 +15,18 @@ type ResponseDataType = {
 }
 
 const Home = () => {
-  const { loggedInUserInfo } = FetchLoggedInUserInfo()
-
   const { notes, loading, deleteNote } = FetchNotes()
+
+  const loggedInUserInfo = useSelector(
+    (state: RootState) => state.auth.logedInUserInfo
+  )
 
   return (
     <View style={styles.homeContainer}>
       <Text style={styles.hiTxt}>Hi {loggedInUserInfo?.username} 👋</Text>
       <ScrollView style={styles.notesWrapper}>
-        {loading && <Text>No notes yet.</Text>}
-        {notes.map((note: ResponseDataType) => {
+        {/* {loading && <Text>No notes yet.</Text>} */}
+        {/* {notes.map((note: ResponseDataType) => {
           return (
             <View style={styles.noteContainer}>
               <View>
@@ -46,7 +43,7 @@ const Home = () => {
               </View>
             </View>
           )
-        })}
+        })} */}
       </ScrollView>
     </View>
   )
@@ -56,35 +53,35 @@ export default Home
 
 const styles = StyleSheet.create({
   homeContainer: {
-    height: '100%',
-    backgroundColor: 'white',
+    height: "100%",
+    backgroundColor: "white",
     paddingVertical: 12,
     paddingHorizontal: 12,
   },
   hiTxt: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
     paddingTop: 12,
   },
   notesWrapper: {
-    flexDirection: 'column',
-    width: '100%',
+    flexDirection: "column",
+    width: "100%",
     gap: 15,
     flex: 1,
     paddingTop: 20,
   },
   noteContainer: {
-    position: 'relative',
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: '#FAF9FD',
+    position: "relative",
+    display: "flex",
+    width: "100%",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    backgroundColor: "#FAF9FD",
     paddingVertical: 8,
     paddingHorizontal: 8,
     marginTop: 10,
     borderRadius: 10,
-    shadowColor: '#7D64C3',
+    shadowColor: "#7D64C3",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -95,26 +92,26 @@ const styles = StyleSheet.create({
   },
   noteTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   noteDescriptionContainer: {
     maxHeight: 100,
   },
   noteDescription: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
     paddingVertical: 8,
   },
   noteBottom: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 8,
   },
   deleteButtonText: {
-    color: '#EF5A56',
-    fontWeight: 'bold',
+    color: "#EF5A56",
+    fontWeight: "bold",
   },
 })

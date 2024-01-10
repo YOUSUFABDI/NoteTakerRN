@@ -1,5 +1,5 @@
-import { Link, router } from 'expo-router'
-import React, { useState } from 'react'
+import { Link } from "expo-router"
+import React, { useState } from "react"
 import {
   ActivityIndicator,
   Alert,
@@ -9,11 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native'
-import { Feather } from '@expo/vector-icons'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../store/store'
-import { loginUser } from '../../store/Auth/authSlice'
+} from "react-native"
+import { Feather } from "@expo/vector-icons"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store/store"
+import { loginUser } from "../../store/Auth/authSlice"
 
 type LoginDataType = {
   username: string
@@ -22,8 +22,8 @@ type LoginDataType = {
 
 const SignIn = () => {
   const [loginInputValues, setLoginInputValues] = useState<LoginDataType>({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   })
   const [showPassword, setShowPassword] = useState(false)
 
@@ -44,7 +44,7 @@ const SignIn = () => {
 
   const handleLogin = () => {
     if (!loginInputValues.username || !loginInputValues.password) {
-      return Alert.alert('Error', 'Please fill all inputs.', [{ text: 'OK' }])
+      return Alert.alert("Error", "Please fill all inputs.", [{ text: "OK" }])
     }
 
     dispatch(loginUser(loginInputValues))
@@ -67,7 +67,7 @@ const SignIn = () => {
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
                 value={loginInputValues.username}
-                onChangeText={(text) => handleOnchange('username', text)}
+                onChangeText={(text) => handleOnchange("username", text)}
               />
             </View>
 
@@ -78,15 +78,15 @@ const SignIn = () => {
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
                 value={loginInputValues.password}
-                onChangeText={(text) => handleOnchange('password', text)}
+                onChangeText={(text) => handleOnchange("password", text)}
                 secureTextEntry={!showPassword}
               />
               <TouchableOpacity
-                style={{ position: 'absolute', right: 16, bottom: 18 }}
+                style={{ position: "absolute", right: 16, bottom: 18 }}
                 onPress={toggleShowPassword}
               >
                 <Feather
-                  name={`${showPassword ? 'eye' : 'eye-off'}`}
+                  name={`${showPassword ? "eye" : "eye-off"}`}
                   size={18}
                   color="#B8B8B8"
                 />
@@ -124,97 +124,97 @@ export default SignIn
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   signInContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: '100%',
-    backgroundColor: 'white',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    height: "100%",
+    backgroundColor: "white",
     paddingHorizontal: 15,
     paddingVertical: 15,
   },
   signInTop: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 24,
   },
   signInTitle: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 8,
   },
   titleTxt: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subTxt: {
-    color: '#A6A6A6',
+    color: "#A6A6A6",
     fontSize: 16,
   },
   inputsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 16,
   },
   inputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     gap: 6,
   },
   inputContainerPass: {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
     gap: 6,
   },
   inputTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   forgotPass: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#54408C',
+    fontWeight: "bold",
+    color: "#54408C",
   },
   input: {
-    backgroundColor: '#FAFAFA',
-    color: '#000',
+    backgroundColor: "#FAFAFA",
+    color: "#000",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
   signInBtns: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     gap: 24,
   },
   signInBtn: {
-    backgroundColor: '#54408C',
+    backgroundColor: "#54408C",
     paddingVertical: 12,
-    width: '100%',
+    width: "100%",
     borderRadius: 48,
   },
   signInBtnTxt: {
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   haveAnAcc: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     gap: 2,
-    alignItems: 'center',
+    alignItems: "center",
   },
   haveAnAccTxt: {
-    color: '#A6A6A6',
+    color: "#A6A6A6",
     fontSize: 16,
   },
   SignInTxt: {
-    color: '#54408C',
+    color: "#54408C",
     fontSize: 16,
   },
 })

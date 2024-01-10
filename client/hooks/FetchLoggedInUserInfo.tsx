@@ -1,8 +1,8 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { BASE_API_URL } from '../lib/baseApiUrl'
-import { Alert } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { BASE_API_URL } from "../lib/baseApiUrl"
+import { Alert } from "react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type LoggedInUserInfoDataType = {
   id: number
@@ -21,13 +21,13 @@ const FetchLoggedInUserInfo = () => {
 
   useEffect(() => {
     const fetchCurrentLoggedInUserInfo = async () => {
-      const username = await AsyncStorage.getItem('logedInUsername')
+      const username = await AsyncStorage.getItem("logedInUsername")
 
       const getUserData = {
         username: username,
       }
 
-      if(!username) return
+      if (!username) return
 
       setIsLoading(true)
       try {
@@ -36,7 +36,7 @@ const FetchLoggedInUserInfo = () => {
           getUserData,
           {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         )
@@ -45,8 +45,8 @@ const FetchLoggedInUserInfo = () => {
       } catch (error: any) {
         if (error.response && error.response.status) {
           console.log(error.response.data)
-          if (error.response.status === 'error') {
-            Alert.alert('Error', error.response.data.message, [{ text: 'OK' }])
+          if (error.response.status === "error") {
+            Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
           }
         } else {
           console.log(error.message)
