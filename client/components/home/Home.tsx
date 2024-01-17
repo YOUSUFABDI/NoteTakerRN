@@ -1,19 +1,13 @@
 import React from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store/store"
-
-type LogInUserNotesDataType = {
-  id: number
-  user_id: number
-  title: string
-  description: string
-  createdDT: number
-  updatedDT: number
-}
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../../store/store"
+import { deleteNote } from "../../store/Auth/authSlice"
 
 const Home = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
   const loggedInUserInfo = useSelector(
     (state: RootState) => state.auth.logedInUserInfo
   )
@@ -28,7 +22,7 @@ const Home = () => {
         <Text style={styles.addNewNoteTxt}>Add new note</Text>
       </TouchableOpacity>
       <ScrollView style={styles.notesWrapper}>
-        {logedInUserNotes.map((note: any) => {
+        {logedInUserNotes.map((note) => {
           return (
             <View style={styles.noteContainer} key={note.id}>
               <View>
@@ -39,7 +33,7 @@ const Home = () => {
               </View>
               <View style={styles.noteBottom}>
                 <Text>Created At: {note.createdDT}</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => dispatch(deleteNote(note.id))}>
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>

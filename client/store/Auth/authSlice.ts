@@ -207,6 +207,24 @@ export const getUserNotes = createAsyncThunk(
   }
 )
 
+export const deleteNote = createAsyncThunk("deleteNote", async (id: number) => {
+  console.log("deleteNote", id)
+  try {
+    const response = await axios.delete(`${BASE_API_URL}/delete_note${id}`)
+
+    const data = await response.data
+    console.log("dt", data)
+
+    if (data.status === "success") {
+      return data.message
+    } else {
+      throw new Error(data.message || "Failed to delete note")
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "Something went wrong")
+  }
+})
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -283,6 +301,17 @@ const authSlice = createSlice({
     builder.addCase(getUserNotes.rejected, (state, action) => {
       state.isLoading = false
       state.error = action.error.message || "Failed to fetch user information"
+    })
+    // cases for deleting note
+    builder.addCase(deleteNote.pending, (state) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteNote.fulfilled, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(deleteNote.rejected, (state, action) => {
+      state.isLoading = false
+      state.error = action.error.message || "Failed to delete note"
     })
   },
 })
