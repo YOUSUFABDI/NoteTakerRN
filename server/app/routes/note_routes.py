@@ -13,7 +13,7 @@ def create_note():
     # Create new note
     note_id = make_note(title, description, created_dt, user_id)
 
-    return jsonify({"message": "created successfully", "note_id": note_id}), 201
+    return jsonify({"message": "created successfully", "status": "success"}), 201
 
 
 @note_bp.route('/get_notes', methods=['POST'])
@@ -21,6 +21,7 @@ def get_notes():
     # Get all notes
     username = request.json.get('username')
     notes = get_all_notes(username)
+    print('nt', notes)
 
     # Check if there are notes
     if not notes:

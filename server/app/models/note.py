@@ -4,14 +4,14 @@ def make_note(title, description, created_dt, user_id):
      cursor = app.config['MYSQL_CONNECTION'].cursor()
      cursor.execute("INSERT INTO notes (title, description, createdDT, user_id) VALUES(%s, %s, %s, %s)", (title, description, created_dt, user_id))
      app.config['MYSQL_CONNECTION'].commit()
-     note_id = cursor.lastrowid
+     note_id = cursor.lastrowid 
      cursor.close()
      return note_id
 
 def get_all_notes(username):
      cursor = app.config['MYSQL_CONNECTION'].cursor(dictionary=True)
      # cursor.execute("SELECT * FROM notes WHERE user_id = %s", (id,))
-     cursor.execute("select notes.id, notes.title, notes.description, notes.createdDT, notes.updatedDT from notes join users on notes.id = users.id where users.username = %s", (username,))
+     cursor.execute("select notes.id, notes.title, notes.description, notes.createdDT, notes.updatedDT from notes join users on notes.user_id = users.id where users.username = %s", (username,))
      notes = cursor.fetchall()
      cursor.close()
      return notes

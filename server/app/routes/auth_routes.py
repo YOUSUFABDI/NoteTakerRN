@@ -67,7 +67,7 @@ def login():
     if not verify_user(username, password):
         return jsonify({"message": "Invalid username or password", "status": "error"}), 401
     
-    return jsonify({"message": "Loged in successful", "status": "success"}), 200 
+    return jsonify({"message": "Loged in successful", "status": "success",  "username": username}), 200 
 
 @auth_bp.route('/get_user', methods=['POST'])
 def get_user():
