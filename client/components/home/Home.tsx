@@ -1,46 +1,18 @@
 import React from "react"
-import { ScrollView, StyleSheet, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store/store"
-import { deleteNote } from "../../store/Auth/authSlice"
+import { StyleSheet, Text, View } from "react-native"
+import FetchLoggedUser from "../../hooks/FetchLoggedUser"
+import FetchLoggedInUserNotes from "../../hooks/FetchLoggedInUserNotes"
+import Note from "../note/Note"
 
 const Home = () => {
-  const dispatch = useDispatch<AppDispatch>()
-
-  const loggedInUserInfo = useSelector(
-    (state: RootState) => state.auth.logedInUserInfo
-  )
-  const logedInUserNotes = useSelector(
-    (state: RootState) => state.auth.logedInUserNotes
-  )
+  const { loggedInUserInfo } = FetchLoggedUser()
+  const { notes } = FetchLoggedInUserNotes()
 
   return (
     <View style={styles.homeContainer}>
       <Text style={styles.hiTxt}>Hi {loggedInUserInfo?.username} 👋</Text>
-      <TouchableOpacity style={styles.addNewNote}>
-        <Text style={styles.addNewNoteTxt}>Add new note</Text>
-      </TouchableOpacity>
-      <ScrollView style={styles.notesWrapper}>
-        {logedInUserNotes.map((note) => {
-          return (
-            <View style={styles.noteContainer} key={note.id}>
-              <View>
-                <Text style={styles.noteTitle}>{note.title}</Text>
-                <ScrollView style={styles.noteDescriptionContainer}>
-                  <Text style={styles.noteDescription}>{note.description}</Text>
-                </ScrollView>
-              </View>
-              <View style={styles.noteBottom}>
-                <Text>Created At: {note.createdDT}</Text>
-                <TouchableOpacity onPress={() => dispatch(deleteNote(note.id))}>
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )
-        })}
-      </ScrollView>
+
+      <Note notes={notes} />
     </View>
   )
 }
@@ -77,7 +49,7 @@ const styles = StyleSheet.create({
     width: "100%",
     gap: 15,
     flex: 1,
-    paddingTop: 20,
+    maxHeight: "87%",
   },
   noteContainer: {
     position: "relative",

@@ -1,21 +1,23 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native"
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from "react-native"
 import React from "react"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store/store"
+import FetchLoggedUser from "../../hooks/FetchLoggedUser"
 
 const MyAccount = () => {
-  const loggedInUserInfo = useSelector(
-    (state: RootState) => state.auth.logedInUserInfo
-  )
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+  const { isLoading, loggedInUserInfo } = FetchLoggedUser()
 
   return (
     <View style={styles.myAccountContainer}>
       <View style={styles.myAccountTop}>
         <Image
           style={styles.myImg}
-          source={require("../../assets/images/profileImage.jpg")}
+          source={require("../../assets/profileImage.jpg")}
         />
         <TouchableOpacity>
           <Text style={styles.changeImgTxt}>Change Picture</Text>

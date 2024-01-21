@@ -1,49 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import OTPTextView from 'react-native-otp-textinput'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../store/store'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setGmail, verifyRegisterGmailOTP } from '../../store/Auth/authSlice'
-
-type OTPDataType = {
-  gmail: string
-  otp_code: number
-}
+import React, { useState } from "react"
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native"
+import OTPTextView from "react-native-otp-textinput"
+import { useAuth } from "../../context/Auth"
+import { useRoute } from "@react-navigation/native"
+import { OTPDT } from "../../lib/types"
 
 const OTP = () => {
   const [otp, setOtp] = useState(0)
 
-  const dispatch = useDispatch<AppDispatch>()
+  const route = useRoute()
+  const { gmail } = route.params as OTPDT
 
-  const storedGmail = useSelector((state: RootState) => state.auth.gmail)
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+  const { verifyRegisterGmailOTP, isLoading } = useAuth()
 
   const handleOtpChange = (newOtp: number) => {
     setOtp(newOtp)
   }
 
-  useEffect(() => {
-    AsyncStorage.getItem('gmail').then((gmail) => {
-      if (gmail) {
-        dispatch(setGmail(gmail))
-      }
-    })
-  }, [dispatch])
-
   const handleOTPVerification = async () => {
     if (!otp) {
-      console.log('Please fill the otp field')
+      console.log("Please fill the otp field")
       return
     }
 
-    const OTPData: OTPDataType = {
-      gmail: storedGmail,
+    const OTPData: OTPDT = {
+      gmail: gmail,
       otp_code: otp,
     }
 
-    dispatch(verifyRegisterGmailOTP(OTPData))
+    verifyRegisterGmailOTP(OTPData)
   }
 
   return (
@@ -51,9 +42,9 @@ const OTP = () => {
       <View style={styles.otpTop}>
         <Text style={styles.otpTopTitle}>Verification Email</Text>
         <Text style={styles.otpTopSubtitle}>
-          Please enter the code we just sent to email{' '}
+          Please enter the code we just sent to email{" "}
         </Text>
-        <Text style={styles.otpTopEmail}>{storedGmail}</Text>
+        <Text style={styles.otpTopEmail}>{gmail}</Text>
       </View>
       <View style={styles.otpWrapper}>
         <OTPTextView
@@ -88,36 +79,36 @@ export default OTP
 
 const styles = StyleSheet.create({
   otpSecContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     gap: 40,
-    height: '100%',
-    backgroundColor: 'white',
+    height: "100%",
+    backgroundColor: "white",
     paddingVertical: 15,
     paddingHorizontal: 15,
   },
   otpTop: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   otpTopTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   otpTopSubtitle: {
     marginTop: 8,
     fontSize: 16,
-    color: '#A6A6A6',
+    color: "#A6A6A6",
   },
   otpTopEmail: {
     fontSize: 16,
     marginTop: 2,
   },
   otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   otpInput: {
     borderWidth: 1,
@@ -125,30 +116,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   otpWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     gap: 24,
-    width: '100%',
+    width: "100%",
   },
   otpBtnContainer: {
-    width: '100%',
+    width: "100%",
   },
   otpBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#54408C',
-    width: '100%',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#54408C",
+    width: "100%",
     borderRadius: 48,
     height: 48,
     paddingVertical: 12,
   },
   otpBtnTxt: {
-    color: 'white',
-    textAlign: 'center',
-    width: '100%',
+    color: "white",
+    textAlign: "center",
+    width: "100%",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 })

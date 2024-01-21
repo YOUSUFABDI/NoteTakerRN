@@ -6,23 +6,14 @@ import {
   MaterialCommunityIcons,
   Foundation,
 } from "@expo/vector-icons"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../store/store"
-import { logout } from "../../store/Auth/authSlice"
-import { router } from "expo-router"
+import FetchLoggedUser from "../../hooks/FetchLoggedUser"
+import { useAuth } from "../../context/Auth"
+import { RouterPropsDT } from "../../lib/types"
 
-const Profile = () => {
-  const loggedInUserInfo = useSelector(
-    (state: RootState) => state.auth.logedInUserInfo
-  )
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
+const Profile = ({ navigation }: RouterPropsDT) => {
+  const { loggedInUserInfo, isLoading } = FetchLoggedUser()
 
-  const dispatch = useDispatch()
-
-  const handleLogout = () => {
-    dispatch(logout(false))
-    router.push("/signIn/")
-  }
+  const { logout } = useAuth()
 
   return (
     <View style={styles.profileTabcontainer}>
@@ -30,7 +21,7 @@ const Profile = () => {
         <View style={styles.profileTabTopImgInfo}>
           <Image
             style={styles.profileImg}
-            source={require("../../assets/images/profileImage.jpg")}
+            source={require("../../assets/profileImage.jpg")}
           />
           <View style={styles.profileNamePhone}>
             <Text style={styles.name}>
@@ -43,7 +34,7 @@ const Profile = () => {
         </View>
 
         <View>
-          <TouchableOpacity onPress={handleLogout}>
+          <TouchableOpacity onPress={logout}>
             <Text style={styles.logoutTxt}>Logout</Text>
           </TouchableOpacity>
         </View>
@@ -52,7 +43,7 @@ const Profile = () => {
       <View style={styles.links}>
         <TouchableOpacity
           style={styles.link}
-          onPress={() => router.push("/my-account/")}
+          onPress={() => navigation.navigate("MyAccountScreen")}
         >
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>
@@ -65,7 +56,10 @@ const Profile = () => {
           <AntDesign name="right" size={20} color="black" />
         </TouchableOpacity>
 
-        <View style={styles.link}>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={() => navigation.navigate("NotesScreen")}
+        >
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>
               <Foundation name="clipboard-notes" size={24} color="#54408C" />
@@ -75,7 +69,7 @@ const Profile = () => {
             </View>
           </View>
           <AntDesign name="right" size={20} color="black" />
-        </View>
+        </TouchableOpacity>
         <View style={styles.link}>
           <View style={styles.linkIconName}>
             <View style={styles.linkIcon}>

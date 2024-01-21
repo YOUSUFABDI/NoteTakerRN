@@ -1,8 +1,8 @@
-import { Link } from "expo-router"
 import React, { useState } from "react"
 import {
   ActivityIndicator,
   Alert,
+  Button,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,27 +11,19 @@ import {
   View,
 } from "react-native"
 import { Feather } from "@expo/vector-icons"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../store/store"
-import { loginUser } from "../../store/Auth/authSlice"
+import { LoginDT, RouterPropsDT } from "../../lib/types"
+import { useAuth } from "../../context/Auth"
 
-type LoginDataType = {
-  username: string
-  password: string
-}
-
-const SignIn = () => {
-  const [loginInputValues, setLoginInputValues] = useState<LoginDataType>({
+const SignIn = ({ navigation }: RouterPropsDT) => {
+  const [loginInputValues, setLoginInputValues] = useState<LoginDT>({
     username: "",
     password: "",
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  const dispatch = useDispatch<AppDispatch>()
+  const { login, isLoading } = useAuth()
 
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading)
-
-  const handleOnchange = (fieldName: keyof LoginDataType, value: string) => {
+  const handleOnchange = (fieldName: keyof LoginDT, value: string) => {
     setLoginInputValues((prevValues) => ({
       ...prevValues,
       [fieldName]: value,
@@ -47,7 +39,7 @@ const SignIn = () => {
       return Alert.alert("Error", "Please fill all inputs.", [{ text: "OK" }])
     }
 
-    dispatch(loginUser(loginInputValues))
+    login(loginInputValues)
   }
 
   return (
@@ -108,9 +100,11 @@ const SignIn = () => {
             </TouchableOpacity>
             <View style={styles.haveAnAcc}>
               <Text style={styles.haveAnAccTxt}>Don’t have an account?</Text>
-              <Link href="/register/" style={styles.SignInTxt}>
-                Sign Up
-              </Link>
+              <Button
+                title="Sign Up"
+                color="#54408C"
+                onPress={() => navigation.navigate("Signup")}
+              />
             </View>
           </View>
         </View>
@@ -125,6 +119,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: "white",
+    height: "100%",
   },
   signInContainer: {
     display: "flex",
