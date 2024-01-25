@@ -14,7 +14,6 @@ const FetchLoggedInUserNotes = () => {
     if (!currentLoggedInUsername) {
       return Alert.alert("Error", "You are not logged in.", [{ text: "OK" }])
     }
-    console.log("currentLoggedInUsername: ", currentLoggedInUsername)
 
     const requestData = {
       username: currentLoggedInUsername,
@@ -32,7 +31,6 @@ const FetchLoggedInUserNotes = () => {
         }
       )
       const data = await response.data
-      console.log("data: " + JSON.stringify(data))
       if (data.status === "success") {
         setNotes(data.message)
       }
@@ -50,50 +48,58 @@ const FetchLoggedInUserNotes = () => {
     }
   }
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      const currentLoggedInUsername = await AsyncStorage.getItem("username")
-      if (!currentLoggedInUsername) {
-        return Alert.alert("Error", "You are not logged in.", [{ text: "OK" }])
+  const createNote = async (note: any) => {
+    try {
+      const response = await axios.post(`${BASE_API_URL}/create_note`, note, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      const data = await response.data
+      if (data.status === "success") {
+        fetchNotes()
       }
-
-      const requestData = {
-        username: currentLoggedInUsername,
-      }
-
-      setIsLoading(true)
-      try {
-        const response = await axios.post(
-          `${BASE_API_URL}/get_notes`,
-          requestData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        const data = await response.data
-        console.log("data: " + JSON.stringify(data))
-        if (data.status === "success") {
-          setNotes(data.message)
+    } catch (error: any) {
+      if (error.response && error.response.status) {
+        console.log(error.response.data)
+        if (error.response.status === "error") {
+          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
         }
-      } catch (error: any) {
-        if (error.response && error.response.status) {
-          console.log(error.response.data)
-          if (error.response.status === "error") {
-            Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
-          }
-        } else {
-          console.log(error.message)
-        }
-      } finally {
-        setIsLoading(false)
+      } else {
+        console.log(error.message)
       }
     }
+  }
+
+  const deleteNote = async (noteId: number) => {
+    try {
+      const response = await axios.delete(
+        `${BASE_API_URL}/delete_note/${noteId}`
+      )
+      const data = await response.data
+      if (data.status === "success") {
+        Alert.alert(data.message, "🎇🎇🎇")
+        fetchNotes()
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status) {
+        console.log(error.response.data)
+        if (error.response.status === "error") {
+          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
+        }
+      } else {
+        console.log(error.message)
+      }
+    }
+  }
+
+  const updateNote = async () => {}
+
+  useEffect(() => {
     fetchNotes()
   }, [])
 
-  return { fetchNotes, notes, isLoading }
+  return { fetchNotes, notes, isLoading, createNote, deleteNote }
 }
 
 export default FetchLoggedInUserNotes

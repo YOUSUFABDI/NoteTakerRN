@@ -1,10 +1,9 @@
 import React, { useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { LINKS } from "../../lib/data"
-import { RouterPropsDT } from "../../lib/types"
 import { useActiveLink } from "../../context/ActiveLinkContext"
 
-const Footer = ({ navigation }: RouterPropsDT) => {
+const Footer = () => {
   const { activeLink, handleActiveLink, setActiveLink, getIconElement } =
     useActiveLink()
 

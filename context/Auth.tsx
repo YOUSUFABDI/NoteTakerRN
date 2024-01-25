@@ -92,9 +92,9 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       if (data.status === "success") {
         const username = data.username
         if (username) {
-          await AsyncStorage.setItem("username", username)
-        } else {
           await AsyncStorage.removeItem("username")
+        } else {
+          await AsyncStorage.setItem("username", loginData.username)
         }
 
         setIsLoggedIn(true)

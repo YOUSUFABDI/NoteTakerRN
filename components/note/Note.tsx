@@ -8,17 +8,22 @@ import {
 } from "react-native"
 import { NoteProps } from "../../lib/types"
 
-const Note = ({ notes }: NoteProps) => {
+const Note = ({ isLoading, notes, deleteNote }: NoteProps) => {
   return (
     <ScrollView
       style={styles.notesWrapper}
       showsVerticalScrollIndicator={false}
     >
+      {isLoading && <Text>Loading...</Text>}
       {Array.isArray(notes) &&
         notes.length > 0 &&
         notes.map((note, index) => {
           return (
-            <View style={styles.noteContainer} key={index}>
+            <TouchableOpacity
+              style={styles.noteContainer}
+              key={index}
+              onPress={() => {}}
+            >
               <View>
                 <Text style={styles.noteTitle}>{note.title}</Text>
                 <ScrollView style={styles.noteDescriptionContainer}>
@@ -27,11 +32,15 @@ const Note = ({ notes }: NoteProps) => {
               </View>
               <View style={styles.noteBottom}>
                 <Text>{note.createdDT}</Text>
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteNote(note.id)
+                  }}
+                >
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           )
         })}
     </ScrollView>

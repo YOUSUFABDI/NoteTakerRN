@@ -8,11 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import { CreateNoteDT } from "../../lib/types"
+import { CreateNoteDT, CreatingNoteDT } from "../../lib/types"
 import { getCurrentDate } from "../../lib/utils"
 import FetchLoggedUser from "../../hooks/FetchLoggedUser"
-import axios from "axios"
-import { BASE_API_URL } from "../../lib/baseApiUrl"
 import Note from "./Note"
 import FetchLoggedInUserNotes from "../../hooks/FetchLoggedInUserNotes"
 
@@ -24,7 +22,7 @@ const Notes = () => {
   const [modalVisible, setModalVisible] = useState(false)
 
   const { loggedInUserInfo } = FetchLoggedUser()
-  const { notes } = FetchLoggedInUserNotes()
+  const { isLoading, notes, createNote, deleteNote } = FetchLoggedInUserNotes()
 
   const handleOnchange = (fieldName: keyof CreateNoteDT, value: string) => {
     setInputValues((prevValues) => ({
@@ -33,12 +31,12 @@ const Notes = () => {
     }))
   }
 
-  const handleCreateNote = async () => {
+  const handleCreateNote = () => {
     if (!inputValues.title || !inputValues.description) {
       return Alert.alert("Error", "Please fill all inputs.", [{ text: "OK" }])
     }
 
-    const note = {
+    const note: CreatingNoteDT = {
       title: inputValues.title,
       description: inputValues.description,
       created_dt: getCurrentDate(),
@@ -48,30 +46,13 @@ const Notes = () => {
     if (!note.created_dt || !note.user_id)
       return Alert.alert("Error", "Something is wrong.", [{ text: "OK" }])
 
-    try {
-      const response = await axios.post(`${BASE_API_URL}/create_note`, note, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      const data = await response.data
-      if (data.status === "success") {
-        setInputValues({
-          title: "",
-          description: "",
-        })
-        setModalVisible(false)
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status) {
-        console.log(error.response.data)
-        if (error.response.status === "error") {
-          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
-        }
-      } else {
-        console.log(error.message)
-      }
-    }
+    setInputValues({
+      title: "",
+      description: "",
+    })
+    setModalVisible(false)
+
+    createNote(note)
   }
 
   return (
@@ -89,9 +70,10 @@ const Notes = () => {
         style={{
           flexDirection: "row",
           paddingHorizontal: 12,
+          height: "100%",
         }}
       >
-        <Note notes={notes} />
+        <Note isLoading={isLoading} notes={notes} deleteNote={deleteNote} />
       </View>
 
       {/* create note modal */}

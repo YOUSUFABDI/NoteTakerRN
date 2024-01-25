@@ -30,7 +30,7 @@ const FetchLoggedUser = () => {
       )
       const data = await response.data
       if (data.status === "success") {
-        setLoggedInUserInfo(data.user)
+        setLoggedInUserInfo(data.message)
       } else {
         throw new Error(data.message || "Failed to fetch user information")
       }

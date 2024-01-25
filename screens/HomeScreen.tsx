@@ -7,7 +7,7 @@ import { RouterPropsDT } from "../lib/types"
 const HomeScreen = ({ navigation }: RouterPropsDT) => {
   return (
     <SafeAreaView style={{ position: "relative" }}>
-      <Home />
+      <Home navigation={navigation} />
       <View style={styles.footer}>
         <Footer navigation={navigation} />
       </View>

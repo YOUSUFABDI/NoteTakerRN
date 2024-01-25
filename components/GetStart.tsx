@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { RouterPropsDT } from "../lib/types"
 

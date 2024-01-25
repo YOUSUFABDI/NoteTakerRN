@@ -43,8 +43,15 @@ export type CreateNoteDT = {
   description: string
 }
 
+export type CreatingNoteDT = {
+  title: string
+  description: string
+  created_dt: string | number
+  user_id: number | undefined
+}
+
 export type NoteDT = {
-  noteID: number
+  id: number
   title: string
   description: string
   createdDT: number
@@ -53,4 +60,6 @@ export type NoteDT = {
 
 export type NoteProps = {
   notes: NoteDT[]
+  deleteNote: (noteId: number) => void
+  isLoading: boolean
 }
