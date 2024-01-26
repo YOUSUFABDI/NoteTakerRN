@@ -58,6 +58,7 @@ const SignIn = ({ navigation }: RouterPropsDT) => {
                 placeholder="Your username."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                autoCapitalize="none"
                 value={loginInputValues.username}
                 onChangeText={(text) => handleOnchange("username", text)}
               />
@@ -69,6 +70,7 @@ const SignIn = ({ navigation }: RouterPropsDT) => {
                 placeholder="Your password."
                 style={styles.input}
                 placeholderTextColor="#B8B8B8"
+                autoCapitalize="none"
                 value={loginInputValues.password}
                 onChangeText={(text) => handleOnchange("password", text)}
                 secureTextEntry={!showPassword}

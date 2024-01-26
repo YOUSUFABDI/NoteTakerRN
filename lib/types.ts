@@ -36,6 +36,7 @@ export type LoggedInUserInfoDT = {
   username: string
   gmail: string
   address: string
+  profile_image: string
 }
 
 export type CreateNoteDT = {
@@ -50,6 +51,19 @@ export type CreatingNoteDT = {
   user_id: number | undefined
 }
 
+export type UpdateNoteDT = {
+  id: number | undefined
+  title: string | undefined
+  description: string | undefined
+}
+
+export type UpdatingNoteDT = {
+  title: string | undefined
+  description: string | undefined
+  updated_dt: string | number
+  id: number
+}
+
 export type NoteDT = {
   id: number
   title: string
@@ -62,4 +76,5 @@ export type NoteProps = {
   notes: NoteDT[]
   deleteNote: (noteId: number) => void
   isLoading: boolean
+  updateNote: (updatingNote: UpdatingNoteDT) => void
 }

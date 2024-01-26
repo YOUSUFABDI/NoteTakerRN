@@ -9,11 +9,17 @@ import {
 import FetchLoggedUser from "../../hooks/FetchLoggedUser"
 import { useAuth } from "../../context/Auth"
 import { RouterPropsDT } from "../../lib/types"
+import { useImageContext } from "../../context/ImageContext"
 
 const Profile = ({ navigation }: RouterPropsDT) => {
   const { loggedInUserInfo, isLoading } = FetchLoggedUser()
+  const { selectedImage } = useImageContext()
 
   const { logout } = useAuth()
+
+  const profileImageUrl = loggedInUserInfo?.profile_image
+    ? loggedInUserInfo?.profile_image
+    : selectedImage
 
   return (
     <View style={styles.profileTabcontainer}>
@@ -21,7 +27,9 @@ const Profile = ({ navigation }: RouterPropsDT) => {
         <View style={styles.profileTabTopImgInfo}>
           <Image
             style={styles.profileImg}
-            source={require("../../assets/profileImage.jpg")}
+            source={{
+              uri: profileImageUrl,
+            }}
           />
           <View style={styles.profileNamePhone}>
             <Text style={styles.name}>

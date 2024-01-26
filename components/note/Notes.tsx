@@ -12,7 +12,7 @@ import { CreateNoteDT, CreatingNoteDT } from "../../lib/types"
 import { getCurrentDate } from "../../lib/utils"
 import FetchLoggedUser from "../../hooks/FetchLoggedUser"
 import Note from "./Note"
-import FetchLoggedInUserNotes from "../../hooks/FetchLoggedInUserNotes"
+import UseNote from "../../hooks/UseNote"
 
 const Notes = () => {
   const [inputValues, setInputValues] = useState<CreateNoteDT>({
@@ -22,7 +22,7 @@ const Notes = () => {
   const [modalVisible, setModalVisible] = useState(false)
 
   const { loggedInUserInfo } = FetchLoggedUser()
-  const { isLoading, notes, createNote, deleteNote } = FetchLoggedInUserNotes()
+  const { isLoading, notes, createNote, deleteNote, updateNote } = UseNote()
 
   const handleOnchange = (fieldName: keyof CreateNoteDT, value: string) => {
     setInputValues((prevValues) => ({
@@ -73,7 +73,12 @@ const Notes = () => {
           height: "100%",
         }}
       >
-        <Note isLoading={isLoading} notes={notes} deleteNote={deleteNote} />
+        <Note
+          isLoading={isLoading}
+          notes={notes}
+          deleteNote={deleteNote}
+          updateNote={updateNote}
+        />
       </View>
 
       {/* create note modal */}

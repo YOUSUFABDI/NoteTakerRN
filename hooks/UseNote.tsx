@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { Alert } from "react-native"
 import axios from "axios"
 import { BASE_API_URL } from "../lib/baseApiUrl"
-import { NoteDT } from "../lib/types"
+import { CreatingNoteDT, NoteDT, UpdatingNoteDT } from "../lib/types"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-const FetchLoggedInUserNotes = () => {
+const UseNote = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [notes, setNotes] = useState<NoteDT[]>([])
 
@@ -48,7 +48,7 @@ const FetchLoggedInUserNotes = () => {
     }
   }
 
-  const createNote = async (note: any) => {
+  const createNote = async (note: CreatingNoteDT) => {
     try {
       const response = await axios.post(`${BASE_API_URL}/create_note`, note, {
         headers: {
@@ -93,13 +93,45 @@ const FetchLoggedInUserNotes = () => {
     }
   }
 
-  const updateNote = async () => {}
+  const updateNote = async (updatingNote: UpdatingNoteDT) => {
+    const note = {
+      title: updatingNote.title,
+      description: updatingNote.description,
+      updated_dt: updatingNote.updated_dt,
+    }
+
+    try {
+      const response = await axios.put(
+        `${BASE_API_URL}/update_note/${updatingNote.id}`,
+        note,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      const data = await response.data
+      if (data.status === "success") {
+        Alert.alert(data.message)
+        fetchNotes()
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status) {
+        console.log(error.response.data)
+        if (error.response.status === "error") {
+          Alert.alert("Error", error.response.data.message, [{ text: "OK" }])
+        }
+      } else {
+        console.log(error.message)
+      }
+    }
+  }
 
   useEffect(() => {
     fetchNotes()
   }, [])
 
-  return { fetchNotes, notes, isLoading, createNote, deleteNote }
+  return { fetchNotes, notes, isLoading, createNote, deleteNote, updateNote }
 }
 
-export default FetchLoggedInUserNotes
+export default UseNote

@@ -3,11 +3,14 @@ import { BASE_API_URL } from "../lib/baseApiUrl"
 import axios from "axios"
 import { GetUserDT, LoggedInUserInfoDT } from "../lib/types"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { useImageContext } from "../context/ImageContext"
 
 const FetchLoggedUser = () => {
   const [loggedInUserInfo, setLoggedInUserInfo] =
     useState<LoggedInUserInfoDT | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const { setSelectedImage } = useImageContext()
 
   const fetchLoggedUserInfo = async () => {
     setIsLoading(true)
@@ -29,8 +32,10 @@ const FetchLoggedUser = () => {
         }
       )
       const data = await response.data
+      console.log(data)
       if (data.status === "success") {
         setLoggedInUserInfo(data.message)
+        setSelectedImage(data.message.profile_image)
       } else {
         throw new Error(data.message || "Failed to fetch user information")
       }

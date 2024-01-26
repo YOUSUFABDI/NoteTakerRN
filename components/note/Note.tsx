@@ -1,14 +1,56 @@
-import React from "react"
+import React, { useState } from "react"
 import {
+  Alert,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native"
-import { NoteProps } from "../../lib/types"
+import { NoteProps, UpdateNoteDT, UpdatingNoteDT } from "../../lib/types"
+import { getCurrentDate } from "../../lib/utils"
 
-const Note = ({ isLoading, notes, deleteNote }: NoteProps) => {
+const Note = ({ isLoading, notes, deleteNote, updateNote }: NoteProps) => {
+  const [note, setNote] = useState<UpdateNoteDT>({
+    title: "",
+    description: "",
+    id: 0,
+  })
+
+  const [modalVisible, setModalVisible] = useState(false)
+
+  const handleOnchange = (fieldName: keyof UpdateNoteDT, value: string) => {
+    setNote((prevValues) => ({
+      ...prevValues,
+      [fieldName]: value,
+    }))
+  }
+
+  const handleUpdateNote = (id: number) => {
+    setModalVisible(true)
+
+    const selectedNote = notes.find((note) => note.id === id)
+    setNote({
+      title: selectedNote?.title,
+      description: selectedNote?.description,
+      id: selectedNote?.id,
+    })
+  }
+
+  const handleUpdateBtn = (id: number | undefined | any) => {
+    const updatingNote: UpdatingNoteDT = {
+      title: note.title,
+      description: note.description,
+      updated_dt: getCurrentDate(),
+      id: id,
+    }
+
+    updateNote(updatingNote)
+    setModalVisible(false)
+  }
+
   return (
     <ScrollView
       style={styles.notesWrapper}
@@ -22,7 +64,9 @@ const Note = ({ isLoading, notes, deleteNote }: NoteProps) => {
             <TouchableOpacity
               style={styles.noteContainer}
               key={index}
-              onPress={() => {}}
+              onPress={() => {
+                handleUpdateNote(note.id)
+              }}
             >
               <View>
                 <Text style={styles.noteTitle}>{note.title}</Text>
@@ -43,6 +87,72 @@ const Note = ({ isLoading, notes, deleteNote }: NoteProps) => {
             </TouchableOpacity>
           )
         })}
+
+      {/* update note modal */}
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.")
+            setModalVisible(!modalVisible)
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  top: 33,
+                  right: 40,
+                  zIndex: 999,
+                }}
+                onPress={() => {
+                  setModalVisible(!modalVisible)
+                }}
+              >
+                <Text
+                  style={{ color: "#54408C", fontWeight: "bold", fontSize: 16 }}
+                >
+                  Close
+                </Text>
+              </TouchableOpacity>
+              <View style={styles.inputsContainer}>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputTitle}>Title</Text>
+                  <TextInput
+                    placeholder="Title."
+                    style={styles.input}
+                    placeholderTextColor="#B8B8B8"
+                    value={note.title}
+                    onChangeText={(text) => handleOnchange("title", text)}
+                  />
+                </View>
+
+                <View style={styles.inputContainerPass}>
+                  <Text style={styles.inputTitle}>Description</Text>
+                  <TextInput
+                    placeholder="Description."
+                    style={styles.input}
+                    placeholderTextColor="#B8B8B8"
+                    value={note.description}
+                    onChangeText={(text) => handleOnchange("description", text)}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.signInBtn}
+                  onPress={() => handleUpdateBtn(note.id)}
+                >
+                  <Text style={styles.signInBtnTxt}>Update</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+      {/* update note modal */}
     </ScrollView>
   )
 }
@@ -99,6 +209,102 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: "#EF5A56",
+    fontWeight: "bold",
+  },
+
+  // modal
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "90%",
+    marginHorizontal: 20,
+  },
+  modalView: {
+    position: "relative",
+    margin: 20,
+    backgroundColor: "white",
+    width: "100%",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+
+  inputsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+    width: "100%",
+  },
+  inputContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+  },
+  inputContainerPass: {
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+  },
+  inputTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  forgotPass: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#54408C",
+  },
+  input: {
+    backgroundColor: "#FAFAFA",
+    color: "#000",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  signInBtns: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 24,
+  },
+  signInBtn: {
+    backgroundColor: "#54408C",
+    paddingVertical: 12,
+    width: "100%",
+    borderRadius: 48,
+  },
+  signInBtnTxt: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
     fontWeight: "bold",
   },
 })

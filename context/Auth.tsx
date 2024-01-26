@@ -36,9 +36,11 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
         },
       })
       const data = await response.data
-      if (data.message === "success") {
+      if (data.status === "success") {
         const gmail = userData.gmail
         navigation.navigate("RegisterOTPScreen", { gmail })
+      } else {
+        Alert.alert("Error", data.message, [{ text: "OK" }])
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
@@ -65,6 +67,8 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       const data = response.data
       if (data.status === "success") {
         navigation.navigate("Login")
+      } else {
+        Alert.alert("Error", data.message, [{ text: "OK" }])
       }
     } catch (error: any) {
       if (error.response && error.response.status) {
@@ -90,15 +94,13 @@ export const AuthContextProvider = ({ children }: AuthContextProps) => {
       })
       const data = await response.data
       if (data.status === "success") {
-        const username = data.username
-        if (username) {
-          await AsyncStorage.removeItem("username")
-        } else {
-          await AsyncStorage.setItem("username", loginData.username)
-        }
+        const username = loginData.username
+        await AsyncStorage.setItem("username", username)
 
         setIsLoggedIn(true)
         await AsyncStorage.setItem("isLoggedIn", "true")
+      } else {
+        Alert.alert("Error", data.message, [{ text: "OK" }])
       }
     } catch (error: any) {
       if (error.response && error.response.status) {

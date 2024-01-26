@@ -6,10 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native"
-import React from "react"
+import React, { useState } from "react"
 import FetchLoggedUser from "../../hooks/FetchLoggedUser"
+import { useImageContext } from "../../context/ImageContext"
 
 const MyAccount = () => {
+  const { selectedImage, handleImageChange } = useImageContext()
   const { isLoading, loggedInUserInfo } = FetchLoggedUser()
 
   return (
@@ -17,9 +19,11 @@ const MyAccount = () => {
       <View style={styles.myAccountTop}>
         <Image
           style={styles.myImg}
-          source={require("../../assets/profileImage.jpg")}
+          source={{
+            uri: selectedImage,
+          }}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleImageChange}>
           <Text style={styles.changeImgTxt}>Change Picture</Text>
         </TouchableOpacity>
       </View>
@@ -29,7 +33,7 @@ const MyAccount = () => {
           <Text style={styles.inputTitle}>Name</Text>
           <TextInput
             placeholder="Your full name."
-            style={styles.input}
+            style={[styles.input, { pointerEvents: "none" }]}
             placeholderTextColor="#B8B8B8"
             defaultValue={
               isLoading ? "Loading ..." : loggedInUserInfo?.full_name
@@ -40,7 +44,7 @@ const MyAccount = () => {
           <Text style={styles.inputTitle}>Email</Text>
           <TextInput
             placeholder="Your email."
-            style={styles.input}
+            style={[styles.input, { pointerEvents: "none" }]}
             placeholderTextColor="#B8B8B8"
             defaultValue={isLoading ? "Loading ..." : loggedInUserInfo?.gmail}
           />
@@ -49,7 +53,7 @@ const MyAccount = () => {
           <Text style={styles.inputTitle}>Phone</Text>
           <TextInput
             placeholder="Your phone number."
-            style={styles.input}
+            style={[styles.input, { pointerEvents: "none" }]}
             placeholderTextColor="#B8B8B8"
             defaultValue={
               isLoading ? "Loading ..." : loggedInUserInfo?.phone_number

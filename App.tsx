@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons"
 import ProfileScreen from "./screens/ProfileScreen"
 import NotesScreen from "./screens/NotesScreen"
 import { ActiveLinkContextProvider } from "./context/ActiveLinkContext"
+import { ImageContextProvider } from "./context/ImageContext"
 import { useActiveLink } from "./context/ActiveLinkContext"
 import { useNavigation } from "@react-navigation/native"
 import MyAccountScreen from "./screens/MyAccountScreen"
@@ -104,7 +105,9 @@ export default function App() {
     <NavigationContainer>
       <AuthContextProvider>
         <ActiveLinkContextProvider>
-          <MainNavigator />
+          <ImageContextProvider>
+            <MainNavigator />
+          </ImageContextProvider>
         </ActiveLinkContextProvider>
       </AuthContextProvider>
     </NavigationContainer>

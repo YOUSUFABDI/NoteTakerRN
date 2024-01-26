@@ -10,9 +10,9 @@ import {
   Alert,
   KeyboardAvoidingView,
   Button,
+  Platform,
 } from "react-native"
 import { Feather } from "@expo/vector-icons"
-import { NavigationProp } from "@react-navigation/native"
 import { useAuth } from "../../context/Auth"
 import { RouterPropsDT, SignupDT } from "../../lib/types"
 
@@ -55,127 +55,137 @@ const Signup = ({ navigation }: RouterPropsDT) => {
     }
 
     signup(inputValues)
-    console.log(isLoading)
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.registerContainer}>
-        <View style={styles.registerTop}>
-          <View style={styles.registerTitle}>
-            <Text style={styles.titleTxt}>Sign Up</Text>
-            <Text style={styles.subTxt}>
-              Create account and store your notes.
-            </Text>
-          </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.registerContainer}>
+          <View style={styles.registerTop}>
+            <View style={styles.registerTitle}>
+              <Text style={styles.titleTxt}>Sign Up</Text>
+              <Text style={styles.subTxt}>
+                Create account and store your notes.
+              </Text>
+            </View>
 
-          <View style={styles.inputsContainer}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Name</Text>
-              <TextInput
-                placeholder="Your full name."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.full_name}
-                onChangeText={(text) => handleChange("full_name", text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Age</Text>
-              <TextInput
-                placeholder="Your age."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.age}
-                onChangeText={(text) => handleChange("age", text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Phone</Text>
-              <TextInput
-                placeholder="Your phone number."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.phone_number}
-                onChangeText={(text) => handleChange("phone_number", text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Address</Text>
-              <TextInput
-                placeholder="Your address."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.address}
-                onChangeText={(text) => handleChange("address", text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Username</Text>
-              <TextInput
-                placeholder="Your username."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.username}
-                onChangeText={(text) => handleChange("username", text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputTitle}>Gmail</Text>
-              <TextInput
-                placeholder="Your gmail."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.gmail}
-                onChangeText={(text) => handleChange("gmail", text)}
-              />
-            </View>
-            <View style={styles.inputContainerPass}>
-              <Text style={styles.inputTitle}>Password</Text>
-              <TextInput
-                placeholder="Your password."
-                style={styles.input}
-                placeholderTextColor="#B8B8B8"
-                value={inputValues.password}
-                onChangeText={(text) => handleChange("password", text)}
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity
-                style={{ position: "absolute", right: 16, bottom: 18 }}
-                onPress={toggleShowPassword}
-              >
-                <Feather
-                  name={showPassword ? "eye" : "eye-off"}
-                  size={18}
-                  color="#B8B8B8"
+            <View style={styles.inputsContainer}>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Name</Text>
+                <TextInput
+                  placeholder="Your full name."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.full_name}
+                  onChangeText={(text) => handleChange("full_name", text)}
                 />
-              </TouchableOpacity>
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Age</Text>
+                <TextInput
+                  placeholder="Your age."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.age}
+                  onChangeText={(text) => handleChange("age", text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Phone</Text>
+                <TextInput
+                  placeholder="Your phone number."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.phone_number}
+                  onChangeText={(text) => handleChange("phone_number", text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Address</Text>
+                <TextInput
+                  placeholder="Your address."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.address}
+                  onChangeText={(text) => handleChange("address", text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Username</Text>
+                <TextInput
+                  placeholder="Your username."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.username}
+                  onChangeText={(text) => handleChange("username", text)}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Gmail</Text>
+                <TextInput
+                  placeholder="Your gmail."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.gmail}
+                  onChangeText={(text) => handleChange("gmail", text)}
+                />
+              </View>
+              <View style={styles.inputContainerPass}>
+                <Text style={styles.inputTitle}>Password</Text>
+                <TextInput
+                  placeholder="Your password."
+                  style={styles.input}
+                  placeholderTextColor="#B8B8B8"
+                  autoCapitalize="none"
+                  value={inputValues.password}
+                  onChangeText={(text) => handleChange("password", text)}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 16, bottom: 18 }}
+                  onPress={toggleShowPassword}
+                >
+                  <Feather
+                    name={showPassword ? "eye" : "eye-off"}
+                    size={18}
+                    color="#B8B8B8"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
 
-          <View style={styles.registerBtns}>
-            <TouchableOpacity
-              style={styles.registerBtn}
-              onPress={handleRegister}
-            >
-              {isLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={styles.registerBtnTxt}>Register</Text>
-              )}
-            </TouchableOpacity>
-            <View style={styles.haveAnAcc}>
-              <Text style={styles.haveAnAccTxt}>Have an account?</Text>
-              <Button
-                title="Sign In"
-                color="#54408C"
-                onPress={() => navigation.navigate("Login")}
-              />
+            <View style={styles.registerBtns}>
+              <TouchableOpacity
+                style={styles.registerBtn}
+                onPress={handleRegister}
+              >
+                {isLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text style={styles.registerBtnTxt}>Register</Text>
+                )}
+              </TouchableOpacity>
+              <View style={styles.haveAnAcc}>
+                <Text style={styles.haveAnAccTxt}>Have an account?</Text>
+                <Button
+                  title="Sign In"
+                  color="#54408C"
+                  onPress={() => navigation.navigate("Login")}
+                />
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
