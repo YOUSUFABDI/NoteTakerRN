@@ -87,9 +87,12 @@ const SignIn = ({ navigation }: RouterPropsDT) => {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.inputContainerPass}>
+            <TouchableOpacity
+              style={styles.inputContainerPass}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
               <Text style={styles.forgotPass}>Forgot password?</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.signInBtns}>

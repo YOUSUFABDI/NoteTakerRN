@@ -78,3 +78,17 @@ export type NoteProps = {
   isLoading: boolean
   updateNote: (updatingNote: UpdatingNoteDT) => void
 }
+
+export type ForgotPassEmailDT = {
+  email: string
+}
+
+export type ForgotPassOTPDT = {
+  gmail: string | null
+  otp_code: number
+}
+
+export type ChangePassDT = {
+  newPassword: string
+  confirmPassword: string
+}

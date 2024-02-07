@@ -15,6 +15,9 @@ import { ImageContextProvider } from "./context/ImageContext"
 import { useActiveLink } from "./context/ActiveLinkContext"
 import { useNavigation } from "@react-navigation/native"
 import MyAccountScreen from "./screens/MyAccountScreen"
+import ForgotPasswordScreen from "./screens/ForgotPasswordScreen"
+import ForgotPassOTP from "./components/forgotPassword/ForgotPassOTP"
+import ChangePassword from "./components/forgotPassword/ChangePassword"
 
 const Stack = createNativeStackNavigator()
 const InsideStack = createNativeStackNavigator()
@@ -74,6 +77,12 @@ function InsideStackLayout() {
 }
 
 function OutsideStackLayout() {
+  const navigation: any = useNavigation()
+
+  const handleGoBack = () => {
+    navigation.goBack()
+  }
+
   return (
     <OutsideStack.Navigator>
       <OutsideStack.Screen
@@ -95,6 +104,42 @@ function OutsideStackLayout() {
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
+      />
+      <OutsideStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleGoBack}>
+              <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerTitle: "Reset password",
+        })}
+      />
+      <OutsideStack.Screen
+        name="ForgotPasswordOTPScreen"
+        component={ForgotPassOTP}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleGoBack}>
+              <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerTitle: "",
+        })}
+      />
+      <OutsideStack.Screen
+        name="ChangePassScreen"
+        component={ChangePassword}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleGoBack}>
+              <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerTitle: "",
+        })}
       />
     </OutsideStack.Navigator>
   )

@@ -32,7 +32,7 @@ const FetchLoggedUser = () => {
         }
       )
       const data = await response.data
-      console.log(data)
+      // console.log(data)
       if (data.status === "success") {
         setLoggedInUserInfo(data.message)
         setSelectedImage(data.message.profile_image)

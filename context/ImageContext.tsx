@@ -12,6 +12,7 @@ type ImageContextMethodsDT = {
   handleImageChange: () => Promise<void>
   setSelectedImage: (value: string) => void
   selectedImage: string
+  loading: boolean
 }
 
 const ImageContext = createContext<ImageContextMethodsDT | null>(null)
@@ -20,10 +21,12 @@ export const ImageContextProvider = ({ children }: ImageContextPropsDT) => {
   const [selectedImage, setSelectedImage] = useState(
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   )
+  const [loading, setLoading] = useState(false)
 
   const handleImageChange = async () => {
     const currentUsername = await AsyncStorage.getItem("username")
 
+    setLoading(true)
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
@@ -49,12 +52,13 @@ export const ImageContextProvider = ({ children }: ImageContextPropsDT) => {
           }
         )
         const data = await response.data
-        console.log("data____________----::", data)
       } else {
         alert("You did not select any image.")
       }
     } catch (error: any) {
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -62,6 +66,7 @@ export const ImageContextProvider = ({ children }: ImageContextPropsDT) => {
     selectedImage,
     setSelectedImage,
     handleImageChange,
+    loading,
   }
 
   return (

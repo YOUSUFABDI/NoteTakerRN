@@ -11,7 +11,7 @@ import FetchLoggedUser from "../../hooks/FetchLoggedUser"
 import { useImageContext } from "../../context/ImageContext"
 
 const MyAccount = () => {
-  const { selectedImage, handleImageChange } = useImageContext()
+  const { selectedImage, handleImageChange, loading } = useImageContext()
   const { isLoading, loggedInUserInfo } = FetchLoggedUser()
 
   return (
@@ -24,7 +24,9 @@ const MyAccount = () => {
           }}
         />
         <TouchableOpacity onPress={handleImageChange}>
-          <Text style={styles.changeImgTxt}>Change Picture</Text>
+          <Text style={styles.changeImgTxt}>
+            {loading ? "Changing..." : "Change Picture"}
+          </Text>
         </TouchableOpacity>
       </View>
 
