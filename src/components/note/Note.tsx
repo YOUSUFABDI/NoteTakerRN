@@ -96,7 +96,7 @@ const Note = () => {
                   </ScrollView>
                 </View>
                 <View style={styles.noteBottom}>
-                  <Text>{timeAgo(note.createdAt.seconds)}</Text>
+                  <Text>{note.created_dt}</Text>
                   <TouchableOpacity
                     onPress={() => {
                       deleteNote(note.noteId)

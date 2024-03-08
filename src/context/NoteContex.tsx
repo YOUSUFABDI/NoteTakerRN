@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   updateDoc,
 } from "firebase/firestore"
@@ -46,11 +47,17 @@ export const NoteContextProvider = ({
         throw new Error("User is not authenticated")
       }
 
-      const notesSnapshot = await getDocs(
-        collection(db, `users/${user.uid}/notes`)
-      )
-      const notes: DocumentData[] = notesSnapshot.docs.map((doc) => doc.data())
-      setNotes(notes)
+      const userRef = doc(db, "users", user.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist")
+      }
+
+      const userData = userDoc.data()
+      const userNotes = userData.notes || []
+
+      setNotes(userNotes)
     } catch (error: any) {
       console.log(error)
       Alert.alert("Error", error.message, [{ text: "OK" }])
@@ -66,15 +73,27 @@ export const NoteContextProvider = ({
         throw new Error("User is not authenticated")
       }
 
-      const notesRef = collection(db, `users/${user.uid}/notes`)
-      const docRef = await addDoc(notesRef, {
+      const userRef = doc(db, "users", user.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist")
+      }
+
+      const userData = userDoc.data()
+
+      const newNote = {
+        noteId: Date.now(),
         createdBy: user.uid,
         title: note.title,
         description: note.description,
         createdAt: new Date(),
-      })
-      await updateDoc(docRef, {
-        noteId: docRef.id,
+      }
+
+      const updatedNotes = [...userData.notes, newNote]
+
+      await updateDoc(userRef, {
+        notes: updatedNotes,
       })
 
       await getNotes()
@@ -92,8 +111,23 @@ export const NoteContextProvider = ({
         throw new Error("User is not authenticated")
       }
 
-      const noteRef = doc(db, `users/${user.uid}/notes/${noteId}`)
-      await deleteDoc(noteRef)
+      const userRef = doc(db, "users", user.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist")
+      }
+
+      const userData = userDoc.data()
+
+      const updatedNotes = userData.notes.filter(
+        (note: any) => note.noteId !== noteId
+      )
+
+      await updateDoc(userRef, {
+        notes: updatedNotes,
+      })
+
       await getNotes()
     } catch (error: any) {
       Alert.alert("Error", error.message, [{ text: "OK" }])
@@ -108,15 +142,40 @@ export const NoteContextProvider = ({
         throw new Error("User is not authenticated")
       }
 
-      const noteRef = doc(db, `users/${user.uid}/notes/${updatedNote.id}`)
-      await updateDoc(noteRef, {
+      const userRef = doc(db, "users", user.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist")
+      }
+
+      const userData = userDoc.data()
+
+      const noteIndex = userData.notes.findIndex(
+        (note: any) => note.noteId === updatedNote.id
+      )
+
+      if (noteIndex === -1) {
+        throw new Error("Note not found")
+      }
+
+      const updatedNotes = [...userData.notes]
+      updatedNotes[noteIndex] = {
+        ...updatedNotes[noteIndex],
         title: updatedNote.title,
         description: updatedNote.description,
         updatedAt: new Date(),
+      }
+
+      await updateDoc(userRef, {
+        notes: updatedNotes,
       })
+
       await getNotes()
     } catch (error: any) {
       Alert.alert("Error", error.message, [{ text: "OK" }])
+    } finally {
+      setLoading(false)
     }
   }
 
