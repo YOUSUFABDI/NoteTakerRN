@@ -3,7 +3,7 @@
 # dependencies
 node_modules/
 
-src/firebase/
+src/firebase/firebase.ts
 
 # Expo
 .expo/
