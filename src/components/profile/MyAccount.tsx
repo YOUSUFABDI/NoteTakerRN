@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Image,
   StyleSheet,
@@ -8,9 +8,13 @@ import {
   View,
 } from "react-native"
 import useAuth from "../../context/AuthContext"
+import { DEFAULT_PROFILE_IMAGE } from "../../lib/data"
 
 const MyAccount = () => {
-  const { loading, getUser, user } = useAuth()
+  const { loading, getUser, user, changeProfileImage, isProfileImgChanging } =
+    useAuth()
+
+  const [profileImage, setProfileImage] = useState(user?.profileImg)
 
   useEffect(() => {
     getUser()
@@ -22,14 +26,15 @@ const MyAccount = () => {
         <Image
           style={styles.myImg}
           source={{
-            uri: "https://blog.yusufdev.com/images/yusuf-n-bg.png",
+            uri: loading ? DEFAULT_PROFILE_IMAGE : profileImage,
+          }}
+          onError={() => {
+            setProfileImage(DEFAULT_PROFILE_IMAGE)
           }}
         />
-        <TouchableOpacity
-        // onPress={handleImageChange}
-        >
+        <TouchableOpacity onPress={changeProfileImage}>
           <Text style={styles.changeImgTxt}>
-            {loading ? "Changing..." : "Change Picture"}
+            {isProfileImgChanging ? "Changing..." : "Change Picture"}
           </Text>
         </TouchableOpacity>
       </View>

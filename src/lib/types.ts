@@ -25,7 +25,7 @@ export type RouterPropsDT = {
 export type UserDT = {
   uid: string
   full_name: string
-  photoURL: string
+  profileImg: string
   email: string
   username: string
   createdAt: string

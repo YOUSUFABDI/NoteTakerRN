@@ -19,7 +19,8 @@ import { useNavigation } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { NavigationProp } from "@react-navigation/native"
 import { FIREBASE_STORAGE } from "../firebase/firebase"
-import { getDownloadURL, ref, uploadString } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import * as ImagePicker from "expo-image-picker"
 
 type AuthContextPropsDT = {
   children: ReactNode
@@ -30,10 +31,13 @@ type AuthContextMethodsDT = {
   signup: (input: SignupDT) => void
   logout: () => void
   getUser: () => void
-  changeProfileImage: (base64Image: string) => void
+  changeProfileImage: () => void
+  setSelectedImage: (value: string) => void
+  selectedImage: string
   loading: boolean
   isLoggedIn: boolean
   user: UserDT | null
+  isProfileImgChanging: boolean
 }
 
 const AuthContext = createContext<AuthContextMethodsDT | null>(null)
@@ -42,6 +46,8 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<UserDT | null>(null)
+  const [selectedImage, setSelectedImage] = useState("")
+  const [isProfileImgChanging, setIsProfileImgChanging] = useState(false)
 
   const navigation: NavigationProp<any> = useNavigation()
 
@@ -133,21 +139,44 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
     }
   }
 
-  const changeProfileImage = async (base64Image: string) => {
-    const storageRef = ref(storage, `profile_images/${user?.uid}`)
-    setLoading(true)
+  const changeProfileImage = async () => {
+    setIsProfileImgChanging(true)
     try {
-      await uploadString(storageRef, base64Image, "base64", {
-        contentType: "image/jpeg",
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        quality: 1,
       })
+      if (!result.canceled && result.assets) {
+        setSelectedImage(result.assets[0].uri)
 
-      const imageUrl = await getDownloadURL(storageRef)
+        const metadata = {
+          contentType: "image/jpeg",
+        }
 
-      // await db.doc(`users/${userId}`).update({
-      //   profileImg: imageUrl,
-      // });
+        const response = await fetch(selectedImage)
+        const blob = await response.blob()
+
+        const storageRef = ref(storage, `profile_images/${user?.uid}`)
+        const uploadImage = await uploadBytes(storageRef, blob, metadata)
+
+        const imageUrl = await getDownloadURL(uploadImage.ref)
+        await setDoc(
+          doc(db, `users/${user?.uid}`),
+          { profileImg: imageUrl },
+          { merge: true }
+        )
+
+        await getUser()
+
+        setIsProfileImgChanging(false)
+        Alert.alert("Success", "Profile image updated successfully", [
+          { text: "OK" },
+        ])
+      }
     } catch (error) {
+      setIsProfileImgChanging(false)
       Alert.alert("Error", "Failed to update profile image", [{ text: "OK" }])
+      console.error("Error updating profile image:", error)
     }
   }
 
@@ -165,6 +194,9 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
     user,
     getUser,
     changeProfileImage,
+    setSelectedImage,
+    selectedImage,
+    isProfileImgChanging,
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

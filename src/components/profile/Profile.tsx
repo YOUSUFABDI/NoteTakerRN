@@ -4,13 +4,16 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import useAuth from "../../context/AuthContext"
 import { RouterPropsDT } from "../../lib/types"
+import { DEFAULT_PROFILE_IMAGE } from "../../lib/data"
 
 const Profile = ({ navigation }: RouterPropsDT) => {
   const { logout, loading, getUser, user } = useAuth()
+
+  const [profileImage, setProfileImage] = useState(user?.profileImg)
 
   useEffect(() => {
     getUser()
@@ -23,7 +26,10 @@ const Profile = ({ navigation }: RouterPropsDT) => {
           <Image
             style={styles.profileImg}
             source={{
-              uri: "https://blog.yusufdev.com/images/yusuf-n-bg.png",
+              uri: loading ? DEFAULT_PROFILE_IMAGE : user?.profileImg,
+            }}
+            onError={() => {
+              setProfileImage(DEFAULT_PROFILE_IMAGE)
             }}
           />
           <View style={styles.profileNamePhone}>
