@@ -25,4 +25,14 @@ export const globalStyle = StyleSheet.create({
   paragraphSm: {
     fontSize: 16,
   },
+
+  withGoogle: {
+    flexDirection: "row",
+    gap: 16,
+    justifyContent: "center",
+    borderColor: "#E8E8E8",
+    borderWidth: 1,
+    paddingVertical: 12,
+    borderRadius: 40,
+  },
 })

@@ -1,7 +1,5 @@
 import React from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import Paragraph from "../../layout/Paragraph"
-import Title from "../../layout/Title"
 import { RouterPropsDT } from "../../lib/types"
 
 const GetStart = ({ navigation }: RouterPropsDT) => {
@@ -10,11 +8,9 @@ const GetStart = ({ navigation }: RouterPropsDT) => {
       <View style={styles.GetStartTop}>
         <Image source={require("../../assets/get_start.png")} />
         <View style={[styles.GetStartTop, { maxWidth: 243 }]}>
-          <Title customStyle={{ fontWeight: "bold" }}>
-            Start your Note taking
-          </Title>
-          <Paragraph
-            customStyle={{
+          <Text style={{ fontWeight: "bold" }}>Start your Note taking</Text>
+          <Text
+            style={{
               color: "#A6A6A6",
               textAlign: "center",
               fontWeight: "bold",
@@ -22,7 +18,7 @@ const GetStart = ({ navigation }: RouterPropsDT) => {
           >
             Store your notes and access any time any where, start exploring it
             will be cool 😎.
-          </Paragraph>
+          </Text>
         </View>
       </View>
 

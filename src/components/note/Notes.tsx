@@ -120,6 +120,7 @@ const Notes = () => {
                     placeholder="Description."
                     style={styles.input}
                     placeholderTextColor="#B8B8B8"
+                    multiline={true}
                     value={inputValues.description}
                     onChangeText={(text) => handleOnchange("description", text)}
                   />

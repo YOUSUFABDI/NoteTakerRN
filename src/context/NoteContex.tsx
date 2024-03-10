@@ -1,17 +1,9 @@
-import {
-  DocumentData,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore"
+import { DocumentData, doc, getDoc, updateDoc } from "firebase/firestore"
 import React, { createContext, useContext, useState } from "react"
 import { Alert } from "react-native"
-import { FIREBASE_AUTH, FIRESTORE_DB } from "../firebase/firebase"
+import { FIRESTORE_DB } from "../firebase/firebase"
 import { CreatingNoteDT, UpdatingNoteDT } from "../lib/types"
+import { getCurrentDate } from "../lib/utils"
 import useAuth from "./AuthContext"
 
 type NoteContextProviderPropsDT = {
@@ -37,8 +29,9 @@ export const NoteContextProvider = ({
 
   const { user } = useAuth()
 
+  const date = getCurrentDate()
+
   const db = FIRESTORE_DB
-  const auth = FIREBASE_AUTH
 
   const getNotes = async () => {
     setLoading(true)
@@ -87,7 +80,7 @@ export const NoteContextProvider = ({
         createdBy: user.uid,
         title: note.title,
         description: note.description,
-        createdAt: new Date(),
+        createdAt: date,
       }
 
       const updatedNotes = [...userData.notes, newNote]
@@ -164,7 +157,7 @@ export const NoteContextProvider = ({
         ...updatedNotes[noteIndex],
         title: updatedNote.title,
         description: updatedNote.description,
-        updatedAt: new Date(),
+        updatedAt: date,
       }
 
       await updateDoc(userRef, {

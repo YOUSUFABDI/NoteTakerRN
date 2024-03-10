@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,10 +15,9 @@ import {
   View,
 } from "react-native"
 import useAuth from "../../context/AuthContext"
-import Label from "../../layout/Label"
-import Title from "../../layout/Title"
 import { RouterPropsDT, SignupDT } from "../../lib/types"
 import { globalStyle } from "../../styles/globalStyles"
+import Divider from "../../layout/Divider"
 
 const Signup = ({ navigation }: RouterPropsDT) => {
   const [inputValues, setInputValues] = useState<SignupDT>({
@@ -56,6 +56,14 @@ const Signup = ({ navigation }: RouterPropsDT) => {
       return Alert.alert("Error", "Please fill all inputs.", [{ text: "OK" }])
     }
 
+    if (inputValues.password.length < 7) {
+      return Alert.alert(
+        "Error",
+        "Password must be at least 7 characters long.",
+        [{ text: "OK" }]
+      )
+    }
+
     signup(inputValues)
     setInputValues({
       full_name: "",
@@ -73,17 +81,15 @@ const Signup = ({ navigation }: RouterPropsDT) => {
         <View style={styles.registerContainer}>
           <View style={styles.registerTop}>
             <View style={styles.registerTitle}>
-              <Title customStyle={{ fontSize: 24, fontWeight: "bold" }}>
-                Sign Up
-              </Title>
-              <Title customStyle={{ color: "#A6A6A6", fontSize: 16 }}>
+              <Text style={{ fontSize: 24, fontWeight: "bold" }}>Sign Up</Text>
+              <Text style={{ color: "#A6A6A6", fontSize: 16 }}>
                 Create account and store your notes.
-              </Title>
+              </Text>
             </View>
 
             <View style={styles.inputsContainer}>
               <View style={styles.inputContainer}>
-                <Label customStyle={{ fontSize: 14 }}>Name</Label>
+                <Text style={{ fontSize: 14 }}>Name</Text>
                 <TextInput
                   placeholder="Your full name."
                   style={globalStyle.input}
@@ -95,7 +101,7 @@ const Signup = ({ navigation }: RouterPropsDT) => {
               </View>
 
               <View style={styles.inputContainer}>
-                <Label customStyle={{ fontSize: 14 }}>Username</Label>
+                <Text style={{ fontSize: 14 }}>Username</Text>
                 <TextInput
                   placeholder="Your username."
                   style={globalStyle.input}
@@ -106,7 +112,7 @@ const Signup = ({ navigation }: RouterPropsDT) => {
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Label customStyle={{ fontSize: 14 }}>Gmail</Label>
+                <Text style={{ fontSize: 14 }}>Gmail</Text>
                 <TextInput
                   placeholder="Your gmail."
                   style={globalStyle.input}
@@ -117,7 +123,7 @@ const Signup = ({ navigation }: RouterPropsDT) => {
                 />
               </View>
               <View style={styles.inputContainerPass}>
-                <Label customStyle={{ fontSize: 14 }}>Password</Label>
+                <Text style={{ fontSize: 14 }}>Password</Text>
                 <TextInput
                   placeholder="Your password."
                   style={[
@@ -162,14 +168,35 @@ const Signup = ({ navigation }: RouterPropsDT) => {
                   <Text style={styles.registerBtnTxt}>Register</Text>
                 )}
               </TouchableOpacity>
-              <View style={styles.haveAnAcc}>
-                <Text style={styles.haveAnAccTxt}>Have an account?</Text>
-                <Button
-                  title="Sign In"
-                  color="#54408C"
-                  onPress={() => navigation.navigate("LoginScreen")}
-                />
-              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 7,
+              }}
+            >
+              <Divider />
+              <Text style={{ color: "#A6A6A6", fontSize: 14 }}>Or with</Text>
+              <Divider />
+            </View>
+
+            <TouchableOpacity style={globalStyle.withGoogle}>
+              <Image source={require("../../assets/google.png")} />
+              <Text style={{ color: "#000", fontSize: 14 }}>
+                Signup with Google
+              </Text>
+            </TouchableOpacity>
+
+            <View style={styles.haveAnAcc}>
+              <Text style={styles.haveAnAccTxt}>Have an account?</Text>
+              <Button
+                title="Sign In"
+                color="#54408C"
+                onPress={() => navigation.navigate("LoginScreen")}
+              />
             </View>
           </View>
         </View>
@@ -239,6 +266,7 @@ const styles = StyleSheet.create({
   },
   haveAnAcc: {
     display: "flex",
+    justifyContent: "center",
     flexDirection: "row",
     gap: 2,
     alignItems: "center",

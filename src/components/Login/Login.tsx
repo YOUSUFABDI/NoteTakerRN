@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,10 +13,9 @@ import {
   View,
 } from "react-native"
 import useAuth from "../../context/AuthContext"
-import Label from "../../layout/Label"
-import Title from "../../layout/Title"
 import { LoginDT, RouterPropsDT } from "../../lib/types"
 import { globalStyle } from "../../styles/globalStyles"
+import Divider from "../../layout/Divider"
 
 const Login = ({ navigation }: RouterPropsDT) => {
   const [loginInputValues, setLoginInputValues] = useState<LoginDT>({
@@ -55,17 +55,17 @@ const Login = ({ navigation }: RouterPropsDT) => {
       <View style={styles.signInContainer}>
         <View style={styles.signInTop}>
           <View style={styles.signInTitle}>
-            <Title customStyle={{ fontSize: 24, fontWeight: "bold" }}>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
               Welcome Back 👋
-            </Title>
-            <Title customStyle={{ color: "#A6A6A6", fontSize: 16 }}>
+            </Text>
+            <Text style={{ color: "#A6A6A6", fontSize: 16 }}>
               Sign to your account
-            </Title>
+            </Text>
           </View>
 
           <View style={styles.inputsContainer}>
             <View style={styles.inputContainer}>
-              <Label customStyle={{ fontSize: 14 }}>Email</Label>
+              <Text style={{ fontSize: 14 }}>Email</Text>
               <TextInput
                 placeholder="Your email."
                 style={globalStyle.input}
@@ -77,7 +77,7 @@ const Login = ({ navigation }: RouterPropsDT) => {
             </View>
 
             <View style={styles.inputContainerPass}>
-              <Label customStyle={{ fontSize: 14 }}>Password</Label>
+              <Text style={{ fontSize: 14 }}>Password</Text>
               <TextInput
                 placeholder="Your password."
                 style={[
@@ -123,14 +123,35 @@ const Login = ({ navigation }: RouterPropsDT) => {
                 <Text style={styles.signInBtnTxt}>Login</Text>
               )}
             </TouchableOpacity>
-            <View style={styles.haveAnAcc}>
-              <Text style={styles.haveAnAccTxt}>Don’t have an account?</Text>
-              <Button
-                title="Sign Up"
-                color="#54408C"
-                onPress={() => navigation.navigate("SignupScreen")}
-              />
-            </View>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 7,
+            }}
+          >
+            <Divider />
+            <Text style={{ color: "#A6A6A6", fontSize: 14 }}>Or with</Text>
+            <Divider />
+          </View>
+
+          <TouchableOpacity style={globalStyle.withGoogle}>
+            <Image source={require("../../assets/google.png")} />
+            <Text style={{ color: "#000", fontSize: 14 }}>
+              Sign in with Google
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.haveAnAcc}>
+            <Text style={styles.haveAnAccTxt}>Don’t have an account?</Text>
+            <Button
+              title="Sign Up"
+              color="#54408C"
+              onPress={() => navigation.navigate("SignupScreen")}
+            />
           </View>
         </View>
       </View>
@@ -206,6 +227,7 @@ const styles = StyleSheet.create({
   haveAnAcc: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center",
     gap: 2,
     alignItems: "center",
   },

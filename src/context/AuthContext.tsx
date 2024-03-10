@@ -2,6 +2,7 @@ import { ReactNode, createContext, useContext, useState } from "react"
 import { LoginDT, SignupDT, UserDT } from "../lib/types"
 import { getCurrentDate } from "../lib/utils"
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -13,6 +14,7 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from "../firebase/firebase"
 import { Alert } from "react-native"
 import {
   createUserWithEmailAndPassword,
+  signInWithCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth"
 import { useNavigation } from "@react-navigation/native"
@@ -29,6 +31,7 @@ type AuthContextPropsDT = {
 type AuthContextMethodsDT = {
   login: (input: LoginDT) => void
   signup: (input: SignupDT) => void
+  handleGoogleAuth: () => void
   logout: () => void
   getUser: () => void
   changeProfileImage: () => void
@@ -51,7 +54,7 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
 
   const navigation: NavigationProp<any> = useNavigation()
 
-  const auth = FIREBASE_AUTH
+  const auth: any = FIREBASE_AUTH
   const db = FIRESTORE_DB
   const storage = FIREBASE_STORAGE
 
@@ -117,6 +120,53 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
       setLoading(false)
     }
   }
+
+  // const handleGoogleAuth = async () => {
+  //   try {
+  //     // Configure Google Sign-In
+  //     await GoogleSignin.configure({
+  //       webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+  //     })
+
+  //     // Check for Google Play services
+  //     await GoogleSignin.hasPlayServices()
+
+  //     // Sign in with Google
+  //     const userInfo = await GoogleSignin.signIn()
+
+  //     // Get Google authentication credential
+  //     const idToken = userInfo.idToken
+  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+
+  //     // Sign in with Firebase credential
+  //     await signInWithCredential(auth, googleCredential)
+
+  //     // Check if the user exists in Firestore
+  //     const q = query(
+  //       collection(FIRESTORE_DB, "users"),
+  //       where("uid", "==", userInfo.user.id)
+  //     )
+  //     const querySnapshot = await getDocs(q)
+
+  //     // If the user does not exist, add them to Firestore
+  //     if (querySnapshot.empty) {
+  //       await addDoc(collection(db, "users"), {
+  //         uid: userInfo.user.id,
+  //         full_name: userInfo.user.name,
+  //         email: userInfo.user.email,
+  //         profileImg: userInfo.user.photo || "",
+  //         username: "", // Add any additional fields you want to store
+  //         notes: [],
+  //         createdAt: Date.now(),
+  //       })
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Google Sign-In Error:", error)
+  //     Alert.alert("Error", "Failed to sign in with Google", [{ text: "OK" }])
+  //   }
+  // }
+
+  const handleGoogleAuth = async () => {}
 
   const getUser = async () => {
     const email = await AsyncStorage.getItem("email")
@@ -188,6 +238,7 @@ export const AuthContextProvider = ({ children }: AuthContextPropsDT) => {
   const values = {
     signup,
     login,
+    handleGoogleAuth,
     logout,
     loading,
     isLoggedIn,
