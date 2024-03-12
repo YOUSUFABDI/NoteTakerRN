@@ -170,7 +170,7 @@ const Signup = ({ navigation }: RouterPropsDT) => {
               </TouchableOpacity>
             </View>
 
-            <View
+            {/* <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -181,14 +181,14 @@ const Signup = ({ navigation }: RouterPropsDT) => {
               <Divider />
               <Text style={{ color: "#A6A6A6", fontSize: 14 }}>Or with</Text>
               <Divider />
-            </View>
+            </View> */}
 
-            <TouchableOpacity style={globalStyle.withGoogle}>
+            {/* <TouchableOpacity style={globalStyle.withGoogle}>
               <Image source={require("../../assets/google.png")} />
               <Text style={{ color: "#000", fontSize: 14 }}>
                 Signup with Google
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View style={styles.haveAnAcc}>
               <Text style={styles.haveAnAccTxt}>Have an account?</Text>
