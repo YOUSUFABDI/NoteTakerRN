@@ -26,7 +26,10 @@ const MyAccount = () => {
         <Image
           style={styles.myImg}
           source={{
-            uri: loading ? DEFAULT_PROFILE_IMAGE : profileImage,
+            uri:
+              loading || profileImage === ""
+                ? DEFAULT_PROFILE_IMAGE
+                : profileImage,
           }}
           onError={() => {
             setProfileImage(DEFAULT_PROFILE_IMAGE)
